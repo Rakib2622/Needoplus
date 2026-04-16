@@ -1,0 +1,1 @@
+hello ths is the dashboard page of the customer section.
