@@ -10,11 +10,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
-
-
-
 
     /**
      * The attributes that are mass assignable.
@@ -26,6 +22,15 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+
+        // Profile fields
+        'phone',
+        'address',
+        'profile_photo',
+
+        // Referral system
+        'referral_code',
+        'referred_by',
     ];
 
     /**
@@ -40,30 +45,46 @@ class User extends Authenticatable
 
     /**
      * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
      */
-
-    public function isAdmin()
-{
-    return $this->role === 'admin';
-}
-
-public function isModerator()
-{
-    return $this->role === 'moderator';
-}
-
-public function isCustomer()
-{
-    return $this->role === 'customer';
-}
-
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Role helpers
+     */
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isModerator()
+    {
+        return $this->role === 'moderator';
+    }
+
+    public function isCustomer()
+    {
+        return $this->role === 'customer';
+    }
+
+    /**
+     * Referral relationships
+     */
+
+    // Who referred this user
+    public function referrer()
+    {
+        return $this->belongsTo(User::class, 'referred_by');
+    }
+
+    // Users referred by this user
+    public function referrals()
+    {
+        return $this->hasMany(User::class, 'referred_by');
     }
 }

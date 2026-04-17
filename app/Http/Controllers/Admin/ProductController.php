@@ -16,10 +16,14 @@ class ProductController extends Controller
      * INDEX - Show all products with category
      */
     public function index()
-    {
-        $products = Product::with('category')->latest()->get();
-        return view('admin.products.index', compact('products'));
-    }
+{
+    $products = \App\Models\Product::with('category')
+        ->latest()
+        ->get()
+        ->groupBy('category_id');
+
+    return view('admin.products.index', compact('products'));
+}
 
     /**
      * CREATE - Load form + categories
@@ -74,6 +78,13 @@ class ProductController extends Controller
             ->with('success', 'Product created successfully');
     }
 
+    public function show($id)
+{
+    $product = Product::with('category')->findOrFail($id);
+
+    return view('admin.products.show', compact('product'));
+}
+ 
     public function edit(string $id)
     {
         $product = Product::findOrFail($id);

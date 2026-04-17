@@ -17,7 +17,7 @@
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <!-- Libraries Stylesheet -->
     <link href="{{ asset('assets/lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
 
@@ -55,13 +55,13 @@
                 </div>
             </div>
         </div>
-        <div class="row align-items-center py-3 px-xl-5" style="background-color: #0f3d6c;">
+        <div class="row align-items-center bg-primary py-3 px-xl-5">
             <div class="col-lg-3 d-none d-lg-block">
                 <a href="{{ route('home') }}" class="text-decoration-none d-flex align-items-center">
 
                     <img src="{{ asset('assets/img/fav.png') }}" alt="Needo+" style="height: 50px;">
 
-                    <span style="color:  #cfc9c9; font-weight: bold; font-size: 32px; margin-left: 8px;">
+                    <span style="color: #fefefe; font-weight: bold; font-size: 32px; margin-left: 8px;">
                         NEEDO+
                     </span>
 
@@ -80,13 +80,13 @@
                 </form>
             </div>
             <div class="col-lg-3 col-6 text-right">
-                <a href="" class="btn border">
-                    <i class="fas fa-heart" style="color: #d85894;"></i>
-                    <span class="badge">0</span>
+                <a href="" class="btn">
+                    <i class="fas fa-heart" style="color: #ffffff;"></i>
+                    <span class="badge text-white">0</span>
                 </a>
-                <a href="{{ route('cart.index') }}" class="btn border">
-                    <i class="fas fa-shopping-cart" style="color: #f65757;"></i>
-                    <span class="badge">0</span>
+                <a href="{{ route('cart.index') }}" class="btn">
+                    <i class="fas fa-shopping-cart" style="color: #ffffff;"></i>
+                    <span class="badge text-white">0</span>
                 </a>
             </div>
         </div>

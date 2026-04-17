@@ -11,15 +11,25 @@ class ProfileUpdateRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
+            // ✔ Editable fields
             'name' => ['required', 'string', 'max:255'],
+
+            'phone' => ['nullable', 'string', 'max:20'],
+
+            'address' => ['nullable', 'string', 'max:255'],
+
+            'profile_photo' => ['nullable', 'image', 'max:2048'],
+
+            /**
+             * ⚠️ Email kept for safety (but you are not using edit in UI)
+             * If you want FULL lock, you can remove email completely
+             */
             'email' => [
-                'required',
+                'sometimes',
                 'string',
                 'lowercase',
                 'email',

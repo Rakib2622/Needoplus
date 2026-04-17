@@ -10,6 +10,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CustomerDashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 
@@ -56,6 +57,8 @@ Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])-
 // Orders (ONLY for logged-in users)
 Route::middleware('auth')->group(function () {
 
+
+
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/order/{id}', [OrderController::class, 'show'])->name('orders.show');
 
@@ -63,9 +66,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/customer/dashboard', [CustomerDashboardController::class, 'index'])->name('customer.dashboard');
 
     // Profile
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 });
 
 

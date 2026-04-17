@@ -1,9 +1,9 @@
 @include('admin.partials.header')
 @include('admin.partials.sidebar')
 
-<div class="main-content">
+<div id="mainContent" class="main-content">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-4">
         <h3>📦 Products</h3>
 
         <a href="{{ route('admin.products.create') }}" class="btn btn-primary">
@@ -11,133 +11,133 @@
         </a>
     </div>
 
-    {{-- Success Message --}}
+    {{-- Success --}}
     @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
     @endif
 
-    <div class="card shadow-sm">
-        <div class="card-body">
+    @forelse($products as $categoryId => $categoryProducts)
 
-            <div class="table-responsive">
+    <!-- CATEGORY TITLE -->
+    <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="mb-0">
+                📂 {{ $categoryProducts->first()->category->name ?? 'Uncategorized' }}
+            </h5>
+        </div>
 
-                <table class="table table-hover align-middle">
+        <!-- SCROLL CONTAINER -->
+        <div class="product-scroll d-flex">
 
-                    <thead class="table-dark">
-                        <tr>
-                            <th>#</th>
-                            <th>Image</th>
-                            <th>Name</th>
-                            <th>Category</th>
-                            <th>Price</th>
-                            <th>Stock</th>
-                            <th>Status</th>
-                            <th class="text-end">Actions</th>
-                        </tr>
-                    </thead>
+            @foreach($categoryProducts as $product)
 
-                    <tbody>
+            <div class="product-card">
 
-                        @forelse($products as $product)
-                            <tr>
+                <div class="card product-ui border-0 h-100">
 
-                                {{-- ID --}}
-                                <td>{{ $loop->iteration }}</td>
+                    <!-- IMAGE -->
+                    <div class="img-box position-relative">
 
-                                {{-- IMAGE --}}
-                                <td>
-                                    @if($product->image)
-                                        <img src="{{ asset('storage/' . $product->image) }}"
-                                             width="60"
-                                             height="60"
-                                             class="rounded border">
-                                    @else
-                                        <span class="text-muted">No Image</span>
-                                    @endif
-                                </td>
+                        @if($product->discount_price)
+                        <span class="badge bg-danger position-absolute top-0 start-0 m-2">
+                            Sale
+                        </span>
+                        @endif
 
-                                {{-- NAME --}}
-                                <td>
-                                    <strong>{{ $product->name }}</strong>
-                                </td>
+                        @if($product->is_active)
+                        <span class="badge bg-success position-absolute top-0 end-0 m-2">
+                            Active
+                        </span>
+                        @else
+                        <span class="badge bg-secondary position-absolute top-0 end-0 m-2">
+                            Off
+                        </span>
+                        @endif
 
-                                {{-- CATEGORY --}}
-                                <td>
-                                    {{ $product->category->name ?? 'N/A' }}
-                                </td>
+                        @if($product->image)
+                        <img src="{{ asset('storage/' . $product->image) }}">
+                        @else
+                        <div class="no-img">No Image</div>
+                        @endif
 
-                                {{-- PRICE --}}
-                                <td>
-                                    @if($product->discount_price)
-                                        <span class="text-danger fw-bold">
-                                            {{ $product->discount_price }}
-                                        </span>
-                                        <br>
-                                        <small class="text-muted text-decoration-line-through">
-                                            {{ $product->price }}
-                                        </small>
-                                    @else
-                                        {{ $product->price }}
-                                    @endif
-                                </td>
+                    </div>
 
-                                {{-- STOCK --}}
-                                <td>
-                                    {{ $product->stock }}
-                                </td>
+                    <div class="card-body p-2 d-flex flex-column">
 
-                                {{-- STATUS --}}
-                                <td>
-                                    @if($product->is_active)
-                                        <span class="badge bg-success">Active</span>
-                                    @else
-                                        <span class="badge bg-secondary">Inactive</span>
-                                    @endif
-                                </td>
+                        <!-- NAME -->
+                        <h6 class="fw-semibold small mb-1">
+                            {{ Str::limit($product->name, 28) }}
+                        </h6>
 
-                                {{-- ACTIONS --}}
-                                <td class="text-end">
+                        <!-- PRICE -->
+                        <div class="mb-1">
 
-                                    <a href="{{ route('admin.products.edit', $product->id) }}"
-                                       class="btn btn-sm btn-warning">
-                                        Edit
-                                    </a>
+                            @if($product->discount_price)
+                            <span class="text-muted text-decoration-line-through small">
+                                ৳ {{ $product->price }}
+                            </span>
+                            <br>
+                            <span class="text-danger fw-bold">
+                                ৳ {{ $product->discount_price }}
+                            </span>
+                            @else
+                            <span class="fw-bold text-dark">
+                                ৳ {{ $product->price }}
+                            </span>
+                            @endif
 
-                                    <form action="{{ route('admin.products.destroy', $product->id) }}"
-                                          method="POST"
-                                          class="d-inline">
+                        </div>
 
-                                        @csrf
-                                        @method('DELETE')
+                        <!-- STOCK -->
+                        <small class="mb-2 
+                    {{ $product->stock > 0 ? 'text-success' : 'text-danger' }}">
+                            {{ $product->stock > 0 ? 'In Stock' : 'Out of Stock' }}
+                        </small>
 
-                                        <button class="btn btn-sm btn-danger"
-                                                onclick="return confirm('Are you sure?')">
-                                            Delete
-                                        </button>
+                        <!-- ACTION -->
+                        <div class="d-flex gap-1 mt-auto">
 
-                                    </form>
+                            <a href="{{ route('admin.products.show', $product->id) }}"
+                                class="btn btn-sm btn-info w-50">
+                                👁
+                            </a>
 
-                                </td>
+                            <a href="{{ route('admin.products.edit', $product->id) }}"
+                                class="btn btn-sm btn-warning w-50">
+                                ✏️
+                            </a>
 
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="8" class="text-center text-muted py-4">
-                                    No products found
-                                </td>
-                            </tr>
-                        @endforelse
+                            <form action="{{ route('admin.products.destroy', $product->id) }}"
+                                method="POST" class="w-50">
+                                @csrf
+                                @method('DELETE')
 
-                    </tbody>
+                                <button class="btn btn-sm btn-danger w-100"
+                                    onclick="return confirm('Delete this product?')">
+                                    🗑️
+                                </button>
+                            </form>
 
-                </table>
+                        </div>
+
+                    </div>
+
+                </div>
 
             </div>
 
+            @endforeach
+
         </div>
     </div>
+
+    @empty
+    <div class="text-center text-muted py-5">
+        No products found
+    </div>
+    @endforelse
 
 </div>
 

@@ -28,24 +28,52 @@ class RegisteredUserController extends Controller
      *
      * @throws ValidationException
      */
-    public function store(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+   public function store(Request $request): RedirectResponse
+{
+    $request->validate([
+        'name' => ['required', 'string', 'max:255'],
+        'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+        'password' => ['required', 'confirmed', Rules\Password::defaults()],
+    ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+    /**
+     * 🔥 Generate UNIQUE referral code
+     */
+    do {
+        $referralCode = 'NEEDO+' . rand(10000, 99999);
+    } while (User::where('referral_code', $referralCode)->exists());
 
-        event(new Registered($user));
+    /**
+     * 🔥 Check referral from request (?ref=NEEDO12345)
+     */
+    $refCode = $request->ref ?? null;
+    $referredBy = null;
 
-        Auth::login($user);
+    if (!empty($refCode)) {
+        $refUser = User::where('referral_code', $refCode)->first();
 
-        return redirect(route('dashboard', absolute: false));
+        if ($refUser) {
+            $referredBy = $refUser->id;
+        }
     }
+
+    /**
+     * 🔥 Create user
+     */
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+
+        // Referral system
+        'referral_code' => $referralCode,
+        'referred_by' => $referredBy,
+    ]);
+
+    event(new Registered($user));
+
+    Auth::login($user);
+
+    return redirect()->route('home');
+}
 }
