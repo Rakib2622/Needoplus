@@ -13,6 +13,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\DiscountController;
 
 
 /*
@@ -95,6 +96,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
         // ✅ Product CRUD
         Route::resource('products', AdminProductController::class);
+
+        Route::resource('discounts', DiscountController::class);
 
     });
 

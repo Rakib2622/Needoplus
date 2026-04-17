@@ -13,6 +13,22 @@ return new class extends Migration
     {
         Schema::create('discounts', function (Blueprint $table) {
             $table->id();
+
+            $table->string('name'); // Admin purpose
+
+            $table->enum('type', ['global', 'category', 'product']);
+
+            $table->foreignId('category_id')->nullable();
+            $table->foreignId('product_id')->nullable();
+
+            $table->enum('discount_type', ['flat', 'percent']);
+            $table->decimal('value', 10, 2);
+
+            $table->timestamp('start_date')->nullable();
+            $table->timestamp('end_date')->nullable();
+
+            $table->boolean('is_active')->default(true);
+
             $table->timestamps();
         });
     }

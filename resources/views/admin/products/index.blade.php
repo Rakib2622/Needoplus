@@ -33,6 +33,15 @@
 
             @foreach($categoryProducts as $product)
 
+            @php
+                $discount = \App\Models\Discount::getApplicableDiscount($product);
+                $finalPrice = $product->final_price;
+                $originalPrice = $product->price;
+                $hasDiscount = $finalPrice < $originalPrice;
+                $saveAmount = $product->discount_amount;
+                $percent = $product->discount_percent;
+            @endphp
+
             <div class="product-card">
 
                 <div class="card product-ui border-0 h-100">
@@ -40,26 +49,29 @@
                     <!-- IMAGE -->
                     <div class="img-box position-relative">
 
-                        @if($product->discount_price)
-                        <span class="badge bg-danger position-absolute top-0 start-0 m-2">
-                            Sale
-                        </span>
+                        {{-- % BADGE --}}
+                        @if($hasDiscount)
+                            <span class="badge bg-danger position-absolute top-0 start-0 m-2">
+                                {{ $percent }}% OFF
+                            </span>
                         @endif
 
+                        {{-- STATUS --}}
                         @if($product->is_active)
-                        <span class="badge bg-success position-absolute top-0 end-0 m-2">
-                            Active
-                        </span>
+                            <span class="badge bg-success position-absolute top-0 end-0 m-2">
+                                Active
+                            </span>
                         @else
-                        <span class="badge bg-secondary position-absolute top-0 end-0 m-2">
-                            Off
-                        </span>
+                            <span class="badge bg-secondary position-absolute top-0 end-0 m-2">
+                                Off
+                            </span>
                         @endif
 
+                        {{-- IMAGE --}}
                         @if($product->image)
-                        <img src="{{ asset('storage/' . $product->image) }}">
+                            <img src="{{ asset('storage/' . $product->image) }}">
                         @else
-                        <div class="no-img">No Image</div>
+                            <div class="no-img">No Image</div>
                         @endif
 
                     </div>
@@ -74,27 +86,40 @@
                         <!-- PRICE -->
                         <div class="mb-1">
 
-                            @if($product->discount_price)
-                            <span class="text-muted text-decoration-line-through small">
-                                ৳ {{ $product->price }}
-                            </span>
-                            <br>
-                            <span class="text-danger fw-bold">
-                                ৳ {{ $product->discount_price }}
-                            </span>
+                            @if($hasDiscount)
+                                <span class="text-muted text-decoration-line-through small">
+                                    ৳ {{ $originalPrice }}
+                                </span>
+                                <br>
+
+                                <span class="text-danger fw-bold">
+                                    ৳ {{ $finalPrice }}
+                                </span>
+
+                                <div class="small text-success">
+                                    Save ৳ {{ $saveAmount }}
+                                </div>
+
                             @else
-                            <span class="fw-bold text-dark">
-                                ৳ {{ $product->price }}
-                            </span>
+                                <span class="fw-bold text-dark">
+                                    ৳ {{ $originalPrice }}
+                                </span>
                             @endif
 
                         </div>
 
                         <!-- STOCK -->
                         <small class="mb-2 
-                    {{ $product->stock > 0 ? 'text-success' : 'text-danger' }}">
+                            {{ $product->stock > 0 ? 'text-success' : 'text-danger' }}">
                             {{ $product->stock > 0 ? 'In Stock' : 'Out of Stock' }}
                         </small>
+
+                        {{-- COUNTDOWN --}}
+                        @if($discount && $discount->end_date)
+                            <small class="text-warning mb-2">
+                                ⏳ Ends: {{ \Carbon\Carbon::parse($discount->end_date)->format('d M Y H:i') }}
+                            </small>
+                        @endif
 
                         <!-- ACTION -->
                         <div class="d-flex gap-1 mt-auto">
