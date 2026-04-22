@@ -2,9 +2,6 @@
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
-        <!-- 🔥 Referral Hidden Field (ADD THIS) -->
-        <input type="hidden" name="ref" value="{{ request('ref') }}">
-
         <!-- Name -->
         <div>
             <x-input-label for="name" :value="__('Name')" />
@@ -17,6 +14,26 @@
             <x-input-label for="email" :value="__('Email')" />
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        </div>
+
+        <!-- 🔥 Referral Code (UPDATED FIELD) -->
+        <div class="mt-4">
+            <x-input-label for="ref" :value="__('Referral Code (Optional)')" />
+
+            <x-text-input 
+                id="ref" 
+                class="block mt-1 w-full" 
+                type="text" 
+                name="ref"
+                :value="old('ref', request('ref'))"
+                placeholder="Enter referral code (if any)"
+            />
+
+            <x-input-error :messages="$errors->get('ref')" class="mt-2" />
+
+            <small class="text-gray-500">
+                If you were invited, enter the referral code here
+            </small>
         </div>
 
         <!-- Password -->
@@ -42,8 +59,9 @@
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
+        <!-- Actions -->
         <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
+            <a class="underline text-sm text-gray-600 hover:text-gray-900"
                href="{{ route('login') }}">
                 {{ __('Already registered?') }}
             </a>

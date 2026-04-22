@@ -28,31 +28,35 @@ class RegisteredUserController extends Controller
      *
      * @throws ValidationException
      */
-   public function store(Request $request): RedirectResponse
+ public function store(Request $request): RedirectResponse
 {
     $request->validate([
         'name' => ['required', 'string', 'max:255'],
         'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
         'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        'ref' => ['nullable', 'string', 'max:50'], // optional referral input
     ]);
 
     /**
      * 🔥 Generate UNIQUE referral code
      */
     do {
-        $referralCode = 'NEEDO+' . rand(10000, 99999);
+        $referralCode = 'NEEDO' . rand(10000, 99999);
     } while (User::where('referral_code', $referralCode)->exists());
 
     /**
-     * 🔥 Check referral from request (?ref=NEEDO12345)
+     * 🔥 Clean + Validate referral code input
      */
-    $refCode = $request->ref ?? null;
+    $refCode = strtoupper(trim($request->input('ref')));
     $referredBy = null;
 
     if (!empty($refCode)) {
         $refUser = User::where('referral_code', $refCode)->first();
 
-        if ($refUser) {
+        /**
+         * 🔒 Prevent self-referral (basic protection)
+         */
+        if ($refUser && $refUser->email !== $request->email) {
             $referredBy = $refUser->id;
         }
     }
