@@ -55,9 +55,14 @@
             <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0">
 
                 <!-- Mobile Logo -->
-                <a href="{{ route('home') }}" class="text-decoration-none d-block d-lg-none">
-                    <img src="{{ asset('assets/img/fav.png') }}" style="height:40px;">
-                    <span class="fw-bold">NEED+</span>
+                <a href="{{ route('home') }}" class="text-decoration-none d-flex align-items-center d-block d-lg-none">
+
+                    <img src="{{ asset('assets/img/fav.png') }}" alt="Needo+" style="height: 40px;">
+
+                    <span style="color:  #53c3d2; font-weight: bold; font-size: 24px; margin-left: 8px;">
+                        NEEDO+
+                    </span>
+
                 </a>
 
                 <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">

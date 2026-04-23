@@ -50,7 +50,7 @@
                 <!-- Mobile Logo -->
                 <a href="{{ route('home') }}" class="text-decoration-none d-block d-lg-none">
                     <img src="{{ asset('assets/img/fav.png') }}" style="height:40px;">
-                    <span class="fw-bold">NEED+</span>
+                    <span class="fw-bold">NEEDO+</span>
                 </a>
 
                 <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">

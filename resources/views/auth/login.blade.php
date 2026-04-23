@@ -1,47 +1,108 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+@include('customer.partial.header')
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+<div class="container py-5">
+    <div class="row justify-content-center">
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        <div class="col-md-5">
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+
+                    <h3 class="text-center mb-4 font-weight-bold">
+                        Login to Your Account
+                    </h3>
+
+                    <!-- Session Status -->
+                    @if(session('status'))
+                        <div class="alert alert-info">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+
+                    <form method="POST" action="{{ route('login') }}">
+                        @csrf
+
+                        <!-- Email -->
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email"
+                                   name="email"
+                                   class="form-control"
+                                   value="{{ old('email') }}"
+                                   required
+                                   autofocus>
+
+                            @error('email')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+
+                        <!-- Password -->
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password"
+                                   name="password"
+                                   class="form-control"
+                                   required>
+
+                            @error('password')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+
+                        <!-- Remember Me -->
+                        <div class="form-group form-check">
+                            <input type="checkbox"
+                                   name="remember"
+                                   class="form-check-input"
+                                   id="remember">
+
+                            <label class="form-check-label" for="remember">
+                                Remember me
+                            </label>
+                        </div>
+
+                        <!-- Login Button -->
+                        <button type="submit" class="btn btn-primary btn-block">
+                            Login
+                        </button>
+
+                        <!-- Forgot Password -->
+                        <div class="text-center mt-3">
+                            @if(Route::has('password.request'))
+                                <a href="{{ route('password.request') }}">
+                                    Forgot your password?
+                                </a>
+                            @endif
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="text-center my-3 text-muted">
+                            OR
+                        </div>
+
+                        <!-- Google Login -->
+                        <a href="{{ route('google.login') }}"
+                           class="btn btn-danger btn-block">
+                            <i class="fab fa-google mr-2"></i>
+                            Continue with Google
+                        </a>
+
+                        <!-- Register Link -->
+                        <div class="text-center mt-3">
+                            <a href="{{ route('register') }}">
+                                Don't have an account? Register
+                            </a>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+    </div>
+</div>
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" name="remember">
-                <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+@include('customer.partial.footer')

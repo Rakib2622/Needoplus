@@ -14,6 +14,10 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\DiscountController;
+use App\Http\Controllers\Auth\SocialAuthController;
+use App\Http\Controllers\ReferralController;
+
+
 
 
 /*
@@ -21,6 +25,9 @@ use App\Http\Controllers\Admin\DiscountController;
 | PUBLIC ROUTES (NO LOGIN REQUIRED)
 |--------------------------------------------------------------------------
 */
+
+Route::get('/auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('/auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
 
 // Home
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -57,6 +64,16 @@ Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])-
 
 // Orders (ONLY for logged-in users)
 Route::middleware('auth')->group(function () {
+
+
+
+    // Show referral page after login
+    Route::get('/referral/complete', [ReferralController::class, 'index'])
+        ->name('referral.complete');
+
+    // Save referral
+    Route::post('/referral/store', [ReferralController::class, 'store'])
+        ->name('referral.store');
 
 
 
