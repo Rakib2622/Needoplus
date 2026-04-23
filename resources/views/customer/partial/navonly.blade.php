@@ -48,9 +48,14 @@
             <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0">
 
                 <!-- Mobile Logo -->
-                <a href="{{ route('home') }}" class="text-decoration-none d-block d-lg-none">
-                    <img src="{{ asset('assets/img/fav.png') }}" style="height:40px;">
-                    <span class="fw-bold">NEEDO+</span>
+                <a href="{{ route('home') }}" class="text-decoration-none d-flex align-items-center d-block d-lg-none">
+
+                    <img src="{{ asset('assets/img/fav.png') }}" alt="Needo+" style="height: 40px;">
+
+                    <span style="color:  #53c3d2; font-weight: bold; font-size: 24px; margin-left: 8px;">
+                        NEEDO+
+                    </span>
+
                 </a>
 
                 <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
@@ -68,7 +73,11 @@
 
                         <a href="{{ route('about') }}" class="nav-item nav-link">About</a>
 
-                        <a href="{{ route('contact') }}" class="nav-item nav-link">Contact</a>
+                        @guest
+                        <a href="{{ route('settings') }}" class="nav-item nav-link">
+                            Settings & Help
+                        </a>
+                        @endguest
 
                     </div>
 
@@ -76,14 +85,16 @@
                     <div class="navbar-nav ml-auto py-0">
 
                         @auth
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-toggle="dropdown">
 
-                                <!-- User Icon -->
+                        <div class="nav-item dropdown">
+
+                            <a href="#" class="nav-link dropdown-toggle d-flex align-items-center"
+                                data-toggle="dropdown">
+
                                 <i class="fa fa-user-circle mr-2" style="font-size: 20px;"></i>
 
-                                <!-- User Name -->
                                 <span>{{ auth()->user()->name }}</span>
+
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right shadow">
@@ -97,9 +108,8 @@
                                 </a>
 
                                 <a href="{{ route('settings') }}" class="dropdown-item">
-                                    <i class="fa fa-cog mr-2"></i> Settings
+                                    <i class="fa fa-cog mr-2"></i> Settings & Help
                                 </a>
-
 
                                 <div class="dropdown-divider"></div>
 
@@ -112,9 +122,14 @@
 
                             </div>
                         </div>
+
                         @else
+
+                        <!-- SIMPLE GUEST VIEW (NO DROPDOWN) -->
                         <a href="{{ route('login') }}" class="nav-item nav-link">Login</a>
+
                         <a href="{{ route('register') }}" class="nav-item nav-link">Register</a>
+
                         @endauth
 
                     </div>

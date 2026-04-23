@@ -51,6 +51,18 @@ Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 Route::get('/terms', [PageController::class, 'terms'])->name('terms');
 
+//settings
+Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+    Route::get('/settings/account', [SettingsController::class, 'account'])->name('settings.account');
+
+    Route::get('/settings/privacy-policy', [SettingsController::class, 'privacy'])->name('settings.privacy');
+    Route::get('/settings/return-policy', [SettingsController::class, 'return'])->name('settings.return');
+    Route::get('/settings/refund-policy', [SettingsController::class, 'refund'])->name('settings.refund');
+    Route::get('/settings/warranty-policy', [SettingsController::class, 'warranty'])->name('settings.warranty');
+
+    Route::get('/settings/help-support', [SettingsController::class, 'help'])->name('settings.help');
+    Route::get('/settings/report-problem', [SettingsController::class, 'report'])->name('settings.report');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -88,7 +100,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+    
 });
 
 
@@ -115,9 +127,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::resource('products', AdminProductController::class);
 
         Route::resource('discounts', DiscountController::class);
-
     });
-
 });
 
 
@@ -139,4 +149,4 @@ Route::middleware(['auth', 'moderator'])->group(function () {
 | AUTH ROUTES (Laravel Breeze)
 |--------------------------------------------------------------------------
 */
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

@@ -80,7 +80,11 @@
 
                         <a href="{{ route('about') }}" class="nav-item nav-link">About</a>
 
-                        <a href="{{ route('contact') }}" class="nav-item nav-link">Contact</a>
+                        @guest
+                        <a href="{{ route('settings') }}" class="nav-item nav-link">
+                            Settings & Help
+                        </a>
+                        @endguest
 
                     </div>
 
@@ -88,14 +92,16 @@
                     <div class="navbar-nav ml-auto py-0">
 
                         @auth
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-toggle="dropdown">
 
-                                <!-- User Icon -->
+                        <div class="nav-item dropdown">
+
+                            <a href="#" class="nav-link dropdown-toggle d-flex align-items-center"
+                                data-toggle="dropdown">
+
                                 <i class="fa fa-user-circle mr-2" style="font-size: 20px;"></i>
 
-                                <!-- User Name -->
                                 <span>{{ auth()->user()->name }}</span>
+
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right shadow">
@@ -108,9 +114,8 @@
                                     <i class="fa fa-box mr-2"></i> Orders
                                 </a>
 
-                                <!-- NEW SETTINGS -->
                                 <a href="{{ route('settings') }}" class="dropdown-item">
-                                    <i class="fa fa-cog mr-2"></i> Settings
+                                    <i class="fa fa-cog mr-2"></i> Settings & Help
                                 </a>
 
                                 <div class="dropdown-divider"></div>
@@ -124,9 +129,14 @@
 
                             </div>
                         </div>
+
                         @else
+
+                        <!-- SIMPLE GUEST VIEW (NO DROPDOWN) -->
                         <a href="{{ route('login') }}" class="nav-item nav-link">Login</a>
+
                         <a href="{{ route('register') }}" class="nav-item nav-link">Register</a>
+
                         @endauth
 
                     </div>
