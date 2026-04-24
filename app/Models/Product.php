@@ -12,10 +12,16 @@ class Product extends Model
         'slug',
         'description',
         'price',
-        'discount_price',
         'stock',
         'image',
+        'images',   // ✅ add
+        'colors',   // ✅ add
         'is_active'
+    ];
+
+    protected $casts = [
+        'colors' => 'array',
+        'images' => 'array',
     ];
 
     public function category()

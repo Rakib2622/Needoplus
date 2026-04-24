@@ -9,17 +9,18 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+   public function up()
 {
     Schema::table('products', function (Blueprint $table) {
-        $table->decimal('discount_price', 10, 2)->nullable()->after('price');
+        $table->json('colors')->nullable()->after('image');
+        $table->json('images')->nullable()->after('colors');
     });
 }
 
 public function down()
 {
     Schema::table('products', function (Blueprint $table) {
-        $table->dropColumn('discount_price');
+        $table->dropColumn(['colors', 'images']);
     });
 }
 };

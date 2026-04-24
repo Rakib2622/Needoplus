@@ -34,59 +34,78 @@
             @foreach($categoryProducts as $product)
 
             @php
-                $discount = \App\Models\Discount::getApplicableDiscount($product);
-                $finalPrice = $product->final_price;
-                $originalPrice = $product->price;
-                $hasDiscount = $finalPrice < $originalPrice;
-                $saveAmount = $product->discount_amount;
+            $discount = \App\Models\Discount::getApplicableDiscount($product);
+            $finalPrice = $product->final_price;
+            $originalPrice = $product->price;
+            $hasDiscount = $finalPrice < $originalPrice;
+                $saveAmount=$product->discount_amount;
                 $percent = $product->discount_percent;
-            @endphp
+                @endphp
 
-            <div class="product-card">
+                <div class="product-card">
 
-                <div class="card product-ui border-0 h-100">
+                    <div class="card product-ui border-0 h-100">
 
-                    <!-- IMAGE -->
-                    <div class="img-box position-relative">
+                        <!-- IMAGE -->
+                        <div class="img-box position-relative">
 
-                        {{-- % BADGE --}}
-                        @if($hasDiscount)
+                            {{-- % BADGE --}}
+                            @if($hasDiscount)
                             <span class="badge bg-danger position-absolute top-0 start-0 m-2">
                                 {{ $percent }}% OFF
                             </span>
-                        @endif
+                            @endif
 
-                        {{-- STATUS --}}
-                        @if($product->is_active)
+                            {{-- STATUS --}}
+                            @if($product->is_active)
                             <span class="badge bg-success position-absolute top-0 end-0 m-2">
                                 Active
                             </span>
-                        @else
+                            @else
                             <span class="badge bg-secondary position-absolute top-0 end-0 m-2">
                                 Off
                             </span>
-                        @endif
+                            @endif
 
-                        {{-- IMAGE --}}
-                        @if($product->image)
-                            <img src="{{ asset('storage/' . $product->image) }}">
-                        @else
+                            {{-- IMAGE --}}
+                            {{-- IMAGE --}}
+                            @php
+                            $mainImage = $product->image;
+                            $galleryImage = $product->images[0] ?? null;
+                            @endphp
+
+                            @if($mainImage)
+                            <img src="{{ asset('storage/' . $mainImage) }}">
+                            @elseif($galleryImage)
+                            <img src="{{ asset('storage/' . $galleryImage) }}">
+                            @else
                             <div class="no-img">No Image</div>
-                        @endif
+                            @endif
 
-                    </div>
+                        </div>
 
-                    <div class="card-body p-2 d-flex flex-column">
+                        <div class="card-body p-2 d-flex flex-column">
 
-                        <!-- NAME -->
-                        <h6 class="fw-semibold small mb-1">
-                            {{ Str::limit($product->name, 28) }}
-                        </h6>
+                            <!-- NAME -->
+                            <h6 class="fw-semibold small mb-1">
+                                {{ Str::limit($product->name, 28) }}
+                            </h6>
 
-                        <!-- PRICE -->
-                        <div class="mb-1">
+                            {{-- COLORS --}}
+                            @if($product->colors)
+                            <div class="mb-1">
+                                @foreach($product->colors as $color)
+                                <span class="badge bg-light text-dark border small">
+                                    {{ $color }}
+                                </span>
+                                @endforeach
+                            </div>
+                            @endif
 
-                            @if($hasDiscount)
+                            <!-- PRICE -->
+                            <div class="mb-1">
+
+                                @if($hasDiscount)
                                 <span class="text-muted text-decoration-line-through small">
                                     ৳ {{ $originalPrice }}
                                 </span>
@@ -100,50 +119,52 @@
                                     Save ৳ {{ $saveAmount }}
                                 </div>
 
-                            @else
+                                @else
                                 <span class="fw-bold text-dark">
                                     ৳ {{ $originalPrice }}
                                 </span>
-                            @endif
+                                @endif
 
-                        </div>
+                            </div>
 
-                        <!-- STOCK -->
-                        <small class="mb-2 
+                            <!-- STOCK -->
+                            <small class="mb-2 
                             {{ $product->stock > 0 ? 'text-success' : 'text-danger' }}">
-                            {{ $product->stock > 0 ? 'In Stock' : 'Out of Stock' }}
-                        </small>
+                                {{ $product->stock > 0 ? 'In Stock' : 'Out of Stock' }}
+                            </small>
 
-                        {{-- COUNTDOWN --}}
-                        @if($discount && $discount->end_date)
+                            {{-- COUNTDOWN --}}
+                            @if($discount && $discount->end_date)
                             <small class="text-warning mb-2">
                                 ⏳ Ends: {{ \Carbon\Carbon::parse($discount->end_date)->format('d M Y H:i') }}
                             </small>
-                        @endif
+                            @endif
 
-                        <!-- ACTION -->
-                        <div class="d-flex gap-1 mt-auto">
+                            <!-- ACTION -->
+                            <div class="d-flex gap-1 mt-auto">
 
-                            <a href="{{ route('admin.products.show', $product->id) }}"
-                                class="btn btn-sm btn-info w-50">
-                                👁
-                            </a>
+                                <a href="{{ route('admin.products.show', $product->id) }}"
+                                    class="btn btn-sm btn-info w-50">
+                                    👁
+                                </a>
 
-                            <a href="{{ route('admin.products.edit', $product->id) }}"
-                                class="btn btn-sm btn-warning w-50">
-                                ✏️
-                            </a>
+                                <a href="{{ route('admin.products.edit', $product->id) }}"
+                                    class="btn btn-sm btn-warning w-50">
+                                    ✏️
+                                </a>
 
-                            <form action="{{ route('admin.products.destroy', $product->id) }}"
-                                method="POST" class="w-50">
-                                @csrf
-                                @method('DELETE')
+                                <form action="{{ route('admin.products.destroy', $product->id) }}"
+                                    method="POST" class="w-50">
+                                    @csrf
+                                    @method('DELETE')
 
-                                <button class="btn btn-sm btn-danger w-100"
-                                    onclick="return confirm('Delete this product?')">
-                                    🗑️
-                                </button>
-                            </form>
+                                    <button class="btn btn-sm btn-danger w-100"
+                                        onclick="return confirm('Delete this product?')">
+                                        🗑️
+                                    </button>
+                                </form>
+
+                            </div>
 
                         </div>
 
@@ -151,9 +172,7 @@
 
                 </div>
 
-            </div>
-
-            @endforeach
+                @endforeach
 
         </div>
     </div>

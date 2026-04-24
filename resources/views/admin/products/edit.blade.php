@@ -37,14 +37,12 @@
                            class="form-control">
                 </div>
 
-                {{-- DESCRIPTION (CKEDITOR) --}}
+                {{-- DESCRIPTION --}}
                 <div class="mb-3">
                     <label>Description</label>
                     <textarea name="description"
                               id="description"
-                              class="form-control">
-                        {{ $product->description }}
-                    </textarea>
+                              class="form-control">{{ $product->description }}</textarea>
                 </div>
 
                 {{-- PRICE --}}
@@ -53,15 +51,6 @@
                     <input type="number"
                            name="price"
                            value="{{ $product->price }}"
-                           class="form-control">
-                </div>
-
-                {{-- DISCOUNT PRICE --}}
-                <div class="mb-3">
-                    <label>Discount Price</label>
-                    <input type="number"
-                           name="discount_price"
-                           value="{{ $product->discount_price }}"
                            class="form-control">
                 </div>
 
@@ -74,9 +63,9 @@
                            class="form-control">
                 </div>
 
-                {{-- CURRENT IMAGE --}}
+                {{-- CURRENT MAIN IMAGE --}}
                 <div class="mb-3">
-                    <label>Current Image</label><br>
+                    <label>Current Main Image</label><br>
 
                     @if($product->image)
                         <img src="{{ asset('storage/' . $product->image) }}"
@@ -87,10 +76,61 @@
                     @endif
                 </div>
 
-                {{-- NEW IMAGE --}}
+                {{-- CHANGE MAIN IMAGE --}}
                 <div class="mb-3">
-                    <label>Change Image (optional)</label>
+                    <label>Change Main Image</label>
                     <input type="file" name="image" class="form-control">
+                </div>
+
+                {{-- GALLERY IMAGES --}}
+                <div class="mb-3">
+                    <label>Current Gallery Images</label><br>
+
+                    @if($product->images)
+                        @foreach($product->images as $img)
+                            <img src="{{ asset('storage/' . $img) }}"
+                                 width="80"
+                                 class="rounded border me-2 mb-2">
+                        @endforeach
+                    @else
+                        <p class="text-muted">No gallery images</p>
+                    @endif
+                </div>
+
+                {{-- UPLOAD NEW GALLERY IMAGES --}}
+                <div class="mb-3">
+                    <label>Upload New Gallery Images (will replace old)</label>
+                    <input type="file" name="images[]" multiple class="form-control">
+                </div>
+
+                {{-- COLORS --}}
+                <div class="mb-3">
+                    <label>Colors</label>
+
+                    <div id="color-wrapper">
+
+                        @if($product->colors)
+                            @foreach($product->colors as $color)
+                                <div class="d-flex mb-2">
+                                    <input type="text"
+                                           name="colors[]"
+                                           value="{{ $color }}"
+                                           class="form-control me-2">
+                                    <button type="button" class="btn btn-danger remove-color">X</button>
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="d-flex mb-2">
+                                <input type="text" name="colors[]" class="form-control me-2" placeholder="Enter color">
+                                <button type="button" class="btn btn-danger remove-color">X</button>
+                            </div>
+                        @endif
+
+                    </div>
+
+                    <button type="button" id="add-color" class="btn btn-sm btn-primary mt-2">
+                        + Add Color
+                    </button>
                 </div>
 
                 {{-- BUTTON --}}
@@ -111,9 +151,27 @@
 
 {{-- CKEDITOR --}}
 <script src="https://cdn.ckeditor.com/4.21.0/standard/ckeditor.js"></script>
-
 <script>
     CKEDITOR.replace('description');
+</script>
+
+{{-- COLOR SCRIPT --}}
+<script>
+    document.getElementById('add-color').addEventListener('click', function () {
+        let html = `
+            <div class="d-flex mb-2">
+                <input type="text" name="colors[]" class="form-control me-2" placeholder="Enter color">
+                <button type="button" class="btn btn-danger remove-color">X</button>
+            </div>
+        `;
+        document.getElementById('color-wrapper').insertAdjacentHTML('beforeend', html);
+    });
+
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-color')) {
+            e.target.parentElement.remove();
+        }
+    });
 </script>
 
 @include('admin.partials.footer')

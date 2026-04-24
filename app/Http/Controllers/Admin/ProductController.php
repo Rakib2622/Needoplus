@@ -17,7 +17,7 @@ class ProductController extends Controller
      */
     public function index()
 {
-    $products = \App\Models\Product::with('category')
+    $products = Product::with('category')
         ->latest()
         ->get()
         ->groupBy('category_id');
@@ -38,45 +38,64 @@ class ProductController extends Controller
      * STORE - Validate + upload image + save product
      */
     public function store(Request $request)
-    {
-        $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'name' => 'required',
-            'price' => 'required|numeric',
-            'discount_price' => 'nullable|numeric',
-            'stock' => 'required|integer',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp'
-        ]);
+{
+    $request->validate([
+        'category_id' => 'required|exists:categories,id',
+        'name' => 'required',
+        'price' => 'required|numeric',
+        'stock' => 'required|integer',
 
-        // IMAGE UPLOAD
-        $imagePath = null;
+        'image' => 'nullable|image|mimes:jpg,jpeg,png,webp',
 
-        if ($request->hasFile('image')) {
+        // NEW
+        'colors' => 'nullable|array',
+        'colors.*' => 'string',
 
-            $file = $request->file('image');
+        'images' => 'nullable|array',
+        'images.*' => 'image|mimes:jpg,jpeg,png,webp',
+    ]);
 
-            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+    // SINGLE IMAGE
+    $imagePath = null;
 
-            $file->storeAs('products', $filename, 'public');
-
-            $imagePath = 'products/' . $filename;
-        }
-
-        // CREATE PRODUCT
-        Product::create([
-            'category_id' => $request->category_id,
-            'name' => $request->name,
-            'slug' => Str::slug($request->name),
-            'price' => $request->price,
-            'discount_price' => $request->discount_price,
-            'stock' => $request->stock,
-            'image' => $imagePath,
-            'is_active' => true,
-        ]);
-
-        return redirect()->route('admin.products.index')
-            ->with('success', 'Product created successfully');
+    if ($request->hasFile('image')) {
+        $file = $request->file('image');
+        $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+        $file->storeAs('products', $filename, 'public');
+        $imagePath = 'products/' . $filename;
     }
+
+    // MULTIPLE IMAGES
+    $images = [];
+
+    if ($request->hasFile('images')) {
+        foreach ($request->file('images') as $file) {
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('products', $filename, 'public');
+            $images[] = 'products/' . $filename;
+        }
+    }
+
+    // CREATE PRODUCT
+    Product::create([
+        'category_id' => $request->category_id,
+        'name' => $request->name,
+        'slug' => Str::slug($request->name),
+        'description' => $request->description,
+        'price' => $request->price,
+        'stock' => $request->stock,
+        'image' => $imagePath,
+
+        // NEW
+        'images' => $images,
+        'colors' => $request->colors,
+
+        'is_active' => true,
+    ]);
+
+    return redirect()->route('admin.products.index')
+        ->with('success', 'Product created successfully');
+}
 
     public function show($id)
 {
@@ -93,7 +112,7 @@ class ProductController extends Controller
         return view('admin.products.edit', compact('product', 'categories'));
     }
 
-    public function update(Request $request, string $id)
+public function update(Request $request, string $id)
 {
     $product = Product::findOrFail($id);
 
@@ -101,31 +120,59 @@ class ProductController extends Controller
         'category_id' => 'required|exists:categories,id',
         'name' => 'required',
         'price' => 'required|numeric',
-        'discount_price' => 'nullable|numeric',
         'stock' => 'required|integer',
-        'image' => 'nullable|image|mimes:jpg,jpeg,png,webp'
+
+        'image' => 'nullable|image|mimes:jpg,jpeg,png,webp',
+
+        // NEW
+        'colors' => 'nullable|array',
+        'colors.*' => 'string',
+
+        'images' => 'nullable|array',
+        'images.*' => 'image|mimes:jpg,jpeg,png,webp',
     ]);
 
     $imagePath = $product->image;
 
     // =========================
-    // IMAGE REPLACE LOGIC (FIXED)
+    // SINGLE IMAGE UPDATE
     // =========================
     if ($request->hasFile('image')) {
 
-        // DELETE OLD IMAGE
         if ($product->image && Storage::disk('public')->exists($product->image)) {
             Storage::disk('public')->delete($product->image);
         }
 
-        // UPLOAD NEW IMAGE (CORRECT DISK)
         $file = $request->file('image');
-
         $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-
         $file->storeAs('products', $filename, 'public');
 
         $imagePath = 'products/' . $filename;
+    }
+
+    // =========================
+    // MULTIPLE IMAGES UPDATE
+    // =========================
+    $images = $product->images ?? [];
+
+    if ($request->hasFile('images')) {
+
+        // DELETE OLD IMAGES
+        if ($product->images) {
+            foreach ($product->images as $img) {
+                if (Storage::disk('public')->exists($img)) {
+                    Storage::disk('public')->delete($img);
+                }
+            }
+        }
+
+        $images = [];
+
+        foreach ($request->file('images') as $file) {
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('products', $filename, 'public');
+            $images[] = 'products/' . $filename;
+        }
     }
 
     // =========================
@@ -137,9 +184,12 @@ class ProductController extends Controller
         'slug' => Str::slug($request->name),
         'description' => $request->description,
         'price' => $request->price,
-        'discount_price' => $request->discount_price,
         'stock' => $request->stock,
         'image' => $imagePath,
+
+        // NEW
+        'images' => $images,
+        'colors' => $request->colors,
     ]);
 
     return redirect()->route('admin.products.index')
@@ -147,17 +197,26 @@ class ProductController extends Controller
 }
 
     public function destroy(string $id)
-    {
-        $product = Product::findOrFail($id);
+{
+    $product = Product::findOrFail($id);
 
-        // delete image file
-        if ($product->image && file_exists(storage_path('app/public/' . $product->image))) {
-            unlink(storage_path('app/public/' . $product->image));
-        }
-
-        $product->delete();
-
-        return redirect()->route('admin.products.index')
-            ->with('success', 'Product deleted successfully');
+    // delete single image
+    if ($product->image && Storage::disk('public')->exists($product->image)) {
+        Storage::disk('public')->delete($product->image);
     }
+
+    // delete multiple images
+    if ($product->images) {
+        foreach ($product->images as $img) {
+            if (Storage::disk('public')->exists($img)) {
+                Storage::disk('public')->delete($img);
+            }
+        }
+    }
+
+    $product->delete();
+
+    return redirect()->route('admin.products.index')
+        ->with('success', 'Product deleted successfully');
+}
 }
