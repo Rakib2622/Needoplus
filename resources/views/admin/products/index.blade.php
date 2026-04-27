@@ -3,11 +3,13 @@
 
 <div id="mainContent" class="main-content">
 
+
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3>📦 Products</h3>
 
         <a href="{{ route('admin.products.create') }}" class="btn btn-primary">
-            + Add Product
+            + Add Product  
         </a>
     </div>
 

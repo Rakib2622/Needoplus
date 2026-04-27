@@ -9565,6 +9565,67 @@ a.text-dark:hover, a.text-dark:focus {
   list-style-type: none;
 }
 
+/* ORDER BUTTON */
+.order-btn {
+    background: #e91e63;
+    transition: all 0.3s ease;
+}
+
+.order-btn:hover {
+    background: #c2185b;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(233, 30, 99, 0.4);
+}
+
+/* WHATSAPP BUTTON */
+.whatsapp-btn {
+    background: #25D366;
+    transition: all 0.3s ease;
+}
+
+.whatsapp-btn:hover {
+    background: #1ebe5d;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(37, 211, 102, 0.4);
+}
+
+.tab-btn {
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.tab-btn:hover {
+    color: #e91e63;
+}
+
+.tab-pane-custom {
+    animation: fadeIn 0.3s ease;
+}
+
+.review-box {
+    background: #fff;
+    transition: 0.3s;
+}
+
+.review-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.nav-tabs .nav-link {
+    cursor: pointer;
+}
+
+.review-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
 .back-to-top {
   position: fixed;
   display: none;

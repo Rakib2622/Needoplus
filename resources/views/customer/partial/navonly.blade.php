@@ -2,44 +2,44 @@
 <div class="container-fluid">
     <div class="row border-top px-xl-5">
         <div class="col-lg-3 d-none d-lg-block">
-            <a class="btn shadow-none d-flex align-items-center justify-content-between w-100" data-toggle="collapse" href="#navbar-vertical" style="height: 65px; margin-top: -1px; padding: 0 30px;">
+            <a class="btn shadow-none d-flex align-items-center justify-content-between w-100"
+                data-toggle="collapse"
+                href="#navbar-vertical"
+                style="height: 65px; margin-top: -1px; padding: 0 30px;">
+
                 <h6 class="m-0">Categories</h6>
                 <i class="fa fa-angle-down text-dark"></i>
             </a>
-            <nav class="collapse position-absolute navbar navbar-vertical navbar-light align-items-start p-0 border border-top-0 border-bottom-0 bg-light" id="navbar-vertical" style="width: calc(100% - 30px); z-index: 1;">
+
+            <nav class="collapse position-absolute navbar navbar-vertical navbar-light align-items-start p-0 border border-top-0 border-bottom-0 bg-light"
+                id="navbar-vertical"
+                style="width: calc(100% - 30px); z-index: 1;">
+
                 <div class="navbar-nav w-100 overflow-hidden" style="height: 410px">
 
-                    <!-- Electronics -->
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link" data-toggle="dropdown">
-                            Electronics & Gadgets <i class="fa fa-angle-down float-right mt-1"></i>
-                        </a>
-                        <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0">
-                            <a href="#" class="dropdown-item">Smartphones</a>
-                            <a href="#" class="dropdown-item">Laptops</a>
-                            <a href="#" class="dropdown-item">Accessories</a>
-                        </div>
+                   @forelse($navCategories as $category)
+
+                    <a href="{{ route('category.show', $category->slug) }}"
+                        class="nav-item nav-link">
+
+                        {{-- Optional image --}}
+                        @if($category->image)
+                        <img src="{{ asset('storage/' . $category->image) }}"
+                            width="25"
+                            class="me-2"
+                            style="object-fit: cover;">
+                        @endif
+
+                        {{ $category->name }}
+                    </a>
+
+                    @empty
+
+                    <div class="p-3 text-muted text-center">
+                        No categories found
                     </div>
 
-                    <!-- Home & Kitchen -->
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link" data-toggle="dropdown">
-                            Home & Kitchen <i class="fa fa-angle-down float-right mt-1"></i>
-                        </a>
-                        <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0">
-                            <a href="#" class="dropdown-item">Kitchen Tools</a>
-                            <a href="#" class="dropdown-item">Appliances</a>
-                            <a href="#" class="dropdown-item">Storage</a>
-                        </div>
-                    </div>
-
-                    <!-- Simple Categories -->
-                    <a href="#" class="nav-item nav-link">Decoration & Lifestyle</a>
-                    <a href="#" class="nav-item nav-link">Fashion & Clothing</a>
-                    <a href="#" class="nav-item nav-link">Mobile Accessories</a>
-                    <a href="#" class="nav-item nav-link">Beauty & Personal Care</a>
-                    <a href="#" class="nav-item nav-link">Grocery & Daily Needs</a>
-                    <a href="#" class="nav-item nav-link">Sports & Fitness</a>
+                    @endforelse
 
                 </div>
             </nav>
@@ -70,6 +70,8 @@
                         <a href="{{ route('home') }}" class="nav-item nav-link active">Home</a>
 
                         <a href="{{ route('products.index') }}" class="nav-item nav-link">Shop</a>
+
+                        
 
                         <a href="{{ route('about') }}" class="nav-item nav-link">About</a>
 
