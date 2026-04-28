@@ -9621,6 +9621,107 @@ a.text-dark:hover, a.text-dark:focus {
     box-shadow: 0 5px 15px rgba(0,0,0,0.08);
 }
 
+/* 🔥 MODAL BACKGROUND SHADE */
+.modal-backdrop.show {
+    opacity: 0.6;
+    backdrop-filter: blur(4px);
+}
+
+/* 🔥 MODAL BOX */
+.quickview-modal {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+/* 🔥 IMAGE BOX */
+.qv-image-box {
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.qv-image-box img {
+    transition: 0.4s ease;
+}
+
+.qv-image-box:hover img {
+    transform: scale(1.08);
+}
+
+/* 🔥 DESCRIPTION SCROLL */
+.qv-desc {
+    max-height: 120px;
+    overflow-y: auto;
+    font-size: 14px;
+    color: #555;
+}
+
+/* 🔥 BUTTON HOVER */
+.quickview-modal .btn-primary {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    border: none;
+    transition: 0.3s;
+}
+
+.quickview-modal .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,123,255,0.4);
+}
+
+.product-item img {
+    transition: 0.4s ease;
+}
+.product-item:hover img {
+    transform: scale(1.08);
+}
+
+/* BADGE */
+.badge-circle {
+    position: absolute;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    text-align: center;
+    line-height: 1.2;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    padding: 5px;
+}
+.badge-stock { top:10px; right:10px; }
+.badge-discount { top:10px; left:10px; }
+
+
+.quick-view-btn {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    background: rgba(255, 255, 255, 0.9);
+    color: #000;
+
+    border: none;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 500;
+
+    border-radius: 20px;
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+/* Hover (optional but nice) */
+.quick-view-btn:hover {
+    background: wheat;
+    color: black;
+}
+
 @keyframes fadeIn {
     from {opacity: 0;}
     to {opacity: 1;}

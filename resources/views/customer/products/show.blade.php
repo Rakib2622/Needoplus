@@ -167,7 +167,7 @@
 
             </div>
 
-            {{-- POLICIES --}}
+            {{-- POLICIES }}
             <div class="mt-4">
                 <a href="{{ route('settings.return') }}" class="text-primary mr-3">
                     🔁 Return Policy
@@ -291,173 +291,11 @@
         </h2>
     </div>
 
-    <div class="row px-xl-5">
-
-        @foreach($relatedProducts as $item)
-
-        <div class="col-lg-3 col-md-4 col-6 mb-4">
-            <div class="card product-item border-0">
-
-                <div class="card-header p-0">
-                    @php
-                    $img = $item->image ?? ($item->images[0] ?? null);
-                    @endphp
-
-                    @if($img)
-                    <img src="{{ asset('storage/' . $img) }}"
-                        class="img-fluid w-100"
-                        style="height:200px; object-fit:cover;">
-                    @endif
-                </div>
-
-                <div class="card-body text-center p-2">
-                    <h6 class="text-truncate">
-                        {{ \Illuminate\Support\Str::limit($item->name, 30) }}
-                    </h6>
-
-                    <h6>৳ {{ $item->final_price }}</h6>
-                </div>
-
-                <div class="card-footer d-flex justify-content-between bg-light border">
-                    <a href="{{ route('products.show', $item->id) }}" class="btn btn-sm text-dark p-0">
-                        <i class="fas fa-eye text-primary mr-1"></i>View
-                    </a>
-                </div>
-
-            </div>
-        </div>
-
-        @endforeach
-
-    </div>
+    {{-- ✅ REUSE SAME PRODUCT DESIGN --}}
+    @include('customer.partial.products', ['products' => $relatedProducts])
 </div>
 
-<script>
-    function changeImage(src, el) {
-        document.getElementById('mainImage').src = src;
 
-        // active thumb
-        document.querySelectorAll('.thumb-img').forEach(img => {
-            img.classList.remove('active-thumb');
-        });
-        el.classList.add('active-thumb');
-    }
-
-    /* 🔍 ZOOM EFFECT */
-    const img = document.getElementById('mainImage');
-
-    img.addEventListener('mousemove', function(e) {
-        const rect = img.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-
-        img.style.transformOrigin = `${x}% ${y}%`;
-        img.style.transform = "scale(2)";
-    });
-
-    img.addEventListener('mouseleave', function() {
-        img.style.transform = "scale(1)";
-    });
-
-    /* 🔥 CLICK → FULL PREVIEW */
-    img.addEventListener('click', function() {
-        document.getElementById('previewImage').src = this.src;
-        $('#imageModal').modal('show');
-    });
-</script>
-
-<script>
-    let qty = 1;
-    let price = parseFloat(document.getElementById('unit-price').innerText);
-
-    function updateTotal() {
-        document.getElementById('total-price').innerText = (qty * price).toFixed(2);
-        document.getElementById('cart-qty').value = qty;
-        document.getElementById('order-qty').value = qty;
-        document.getElementById('qty').value = qty;
-    }
-
-    document.getElementById('plus').onclick = () => {
-        qty++;
-        updateTotal();
-    };
-    document.getElementById('minus').onclick = () => {
-        if (qty > 1) qty--;
-        updateTotal();
-    };
-
-    // COLOR SELECT
-    document.querySelectorAll('.color-circle').forEach(el => {
-        el.addEventListener('click', function() {
-
-            document.querySelectorAll('.color-circle').forEach(c => c.style.border = '2px solid #ddd');
-
-            this.style.border = '2px solid black';
-
-            let color = this.dataset.color;
-
-            document.getElementById('selected-color').innerText = "Selected: " + color;
-            document.getElementById('color-input').value = color;
-            document.getElementById('cart-color').value = color;
-        });
-    });
-</script>
-
-<script>
-    const tabs = document.querySelectorAll('.tab-btn');
-
-    tabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-
-            // ACTIVE TAB STYLE
-            tabs.forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-
-            let target = this.dataset.target;
-
-            // HIDE ALL
-            document.querySelectorAll('.tab-content-box').forEach(box => {
-                box.classList.add('d-none');
-            });
-
-            // SHOW BASED ON TAB
-            if (target === 'description') {
-                document.getElementById('description').classList.remove('d-none');
-                document.getElementById('description-right').classList.remove('d-none');
-            }
-
-            if (target === 'reviews') {
-                document.getElementById('reviews').classList.remove('d-none');
-                document.getElementById('reviews-left').classList.remove('d-none');
-            }
-
-        });
-    });
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-    const container = document.getElementById("review-list");
-
-    if (!container) return;
-
-    let reviews = Array.from(container.querySelectorAll(".review-item"));
-
-    // 🔀 Shuffle
-    for (let i = reviews.length - 1; i > 0; i--) {
-        let j = Math.floor(Math.random() * (i + 1));
-        [reviews[i], reviews[j]] = [reviews[j], reviews[i]];
-    }
-
-    // 🧹 Clear + show only 4 (change if needed)
-    container.innerHTML = "";
-
-    reviews.slice(0, 10).forEach(el => {
-        container.appendChild(el);
-    });
-
-});
-</script>
 
 
 

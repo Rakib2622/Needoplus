@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Support\Str;
+
 class Product extends Model
 {
     protected $fillable = [
@@ -56,5 +58,18 @@ public function getDiscountPercentAttribute()
     if ($this->price <= 0) return 0;
 
     return round((($this->price - $this->final_price) / $this->price) * 100);
+}
+
+protected static function boot()
+{
+    parent::boot();
+
+    static::creating(function ($product) {
+        $product->slug = Str::slug($product->name);
+    });
+
+    static::updating(function ($product) {
+        $product->slug = Str::slug($product->name);
+    });
 }
 }

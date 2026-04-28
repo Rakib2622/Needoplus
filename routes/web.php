@@ -34,7 +34,10 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Products
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-Route::get('/product/{id}', [ProductController::class, 'show'])->name('products.show');
+// Route::get('/product/{id}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/product/{slug}', [ProductController::class, 'show'])
+    ->name('product.show');
+Route::get('/product/quick-view/{id}', [ProductController::class, 'quickView']);
 
 // Categories
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');

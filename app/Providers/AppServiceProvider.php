@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
+use Illuminate\Pagination\Paginator;
 use App\Models\Category;
 
 class AppServiceProvider extends ServiceProvider
@@ -20,15 +21,19 @@ class AppServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      */
     public function boot(): void
-{
-    View::composer('customer.partial.navonly', function ($view) {
+    {
+        // ✅ FIX PAGINATION (Bootstrap 4)
+        Paginator::useBootstrapFour();
 
-        $navCategories = Category::has('products')
-            ->withCount('products')
-            ->orderBy('products_count', 'desc')
-            ->get();
+        // ✅ NAVBAR CATEGORIES (GLOBAL)
+        View::composer('customer.partial.navonly', function ($view) {
 
-        $view->with('navCategories', $navCategories);
-    });
-}
+            $navCategories = Category::has('products')
+                ->withCount('products')
+                ->orderBy('products_count', 'desc')
+                ->get();
+
+            $view->with('navCategories', $navCategories);
+        });
+    }
 }
