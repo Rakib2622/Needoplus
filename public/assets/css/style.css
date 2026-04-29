@@ -9736,6 +9736,74 @@ a.text-dark:hover, a.text-dark:focus {
   animation: action 1s infinite alternate;
 }
 
+/* Package badge color */
+.badge-discount {
+    top: 10px;
+    left: 10px;
+    position: absolute;
+    color: #fff;
+    padding: 6px 10px;
+    font-size: 11px;
+    border-radius: 20px;
+}
+
+.package-card {
+    transition: 0.3s;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.package-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.package-header {
+    background: linear-gradient(135deg, #6f42c1, #007bff);
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+}
+
+
+#cart-items::-webkit-scrollbar {
+    width: 4px;
+}
+#cart-items::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+/* smooth hover effect */
+#cart-items > div:hover {
+    background: #f8f9fa;
+    transition: 0.2s;
+}
+
+.silver-text {
+    font-weight: bold;
+    font-size: 32px;
+    margin-left: 8px;
+    background: linear-gradient(
+        45deg,
+        #c0c0c0,
+        #e8e8e8,
+        #ffffff,
+        #d9d9d9,
+        #a6a6a6
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: all 0.4s ease;
+    display: inline-block;
+}
+
+/* Hover Effect */
+.silver-text:hover {
+    transform: scale(1.1);
+    text-shadow: 0 0 10px rgba(192, 192, 192, 0.7);
+}
+
+
 @keyframes action {
   0% {
     transform: translateY(0);

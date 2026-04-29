@@ -13,9 +13,11 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\AdminPackageController;
 use App\Http\Controllers\Admin\DiscountController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\ReferralController;
+use App\Http\Controllers\PackageController;
 
 
 
@@ -26,8 +28,8 @@ use App\Http\Controllers\ReferralController;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('google.login');
-Route::get('/auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
+
+
 
 // Home
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -38,6 +40,12 @@ Route::get('/products', [ProductController::class, 'index'])->name('products.ind
 Route::get('/product/{slug}', [ProductController::class, 'show'])
     ->name('product.show');
 Route::get('/product/quick-view/{id}', [ProductController::class, 'quickView']);
+
+Route::get('/packages', [PackageController::class, 'index'])->name('packages.index');
+Route::get('/packages/{id}', [PackageController::class, 'show'])->name('packages.show');
+Route::get('/auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('/auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
+
 
 // Categories
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
@@ -53,21 +61,14 @@ Route::prefix('cart')->group(function () {
     Route::delete('/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
 });
 
+Route::get('/cart/count', [CartController::class, 'count'])->name('cart.count');
+Route::get('/cart/preview', [CartController::class, 'preview'])->name('cart.preview');
+
 Route::prefix('checkout')->group(function () {
-
-    // Show checkout page
     Route::get('/', [CheckoutController::class, 'index'])->name('checkout.index');
-
-    // Save shipping info (optional step)
     Route::post('/store', [CheckoutController::class, 'store'])->name('checkout.store');
-
-    // Place order
     Route::post('/place-order', [CheckoutController::class, 'placeOrder'])->name('checkout.placeOrder');
-
-    // Success page
     Route::get('/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
-
-    // Cancel / failed
     Route::get('/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
 });
 // Pages
@@ -151,6 +152,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::resource('products', AdminProductController::class);
 
         Route::resource('discounts', DiscountController::class);
+
+        Route::resource('packages', AdminPackageController::class);
     });
 });
 

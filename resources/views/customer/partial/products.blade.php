@@ -87,17 +87,21 @@
             <a href="{{ route('product.show', $product->slug) }}"
                 class="btn btn-sm text-dark p-0">
                 <i class="fas fa-eye text-primary mr-1"></i>
-                View Details
+                View
             </a>
 
             {{-- ADD TO CART --}}
-            <form action="{{ route('cart.add') }}" method="POST">
+            <form action="{{ route('cart.add') }}" method="POST" class="add-to-cart-form">
                 @csrf
+
+                <input type="hidden" name="type" value="product">
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                 <input type="hidden" name="quantity" value="1">
 
-                <button class="btn btn-sm p-0 {{ $product->stock <= 0 ? 'text-muted' : 'text-dark' }}"
+                <button type="submit"
+                    class="btn btn-sm p-0 {{ $product->stock <= 0 ? 'text-muted' : 'text-dark' }}"
                     {{ $product->stock <= 0 ? 'disabled' : '' }}>
+
                     <i class="fas fa-shopping-cart text-primary mr-1"></i>
                     Add to Cart
                 </button>
@@ -173,14 +177,21 @@
                                     </div>
                                 </div>
 
-                                <form id="qv-cart-form" method="POST" action="{{ route('cart.add') }}" class="flex-grow-1">
+                                <form id="qv-cart-form"
+                                    action="{{ route('cart.add') }}"
+                                    method="POST"
+                                    class="add-to-cart-form flex-grow-1">
+
                                     @csrf
+
+                                    <input type="hidden" name="type" value="product">
                                     <input type="hidden" name="product_id" id="qv-product-id">
                                     <input type="hidden" name="quantity" id="qv-cart-qty" value="1">
                                     <input type="hidden" name="color" id="qv-cart-color">
 
-                                    <button class="btn btn-info w-100 rounded-pill shadow-sm">
-                                        <i class="fa fa-shopping-bag mr-2"></i> Add to Cart
+                                    <button type="submit" class="btn btn-info w-100 rounded-pill shadow-sm">
+                                        <i class="fa fa-shopping-bag mr-2"></i>
+                                        Add to Cart
                                     </button>
                                 </form>
 

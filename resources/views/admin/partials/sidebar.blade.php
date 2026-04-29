@@ -5,6 +5,7 @@
     <a href="{{ route('admin.dashboard') }}">🏠 <span>Dashboard</span></a>
     <a href="{{ route('admin.categories.index') }}">📂 <span>Categories</span></a>
     <a href="{{ route('admin.products.index') }}">📦 <span>Products</span></a>
+    <a href="{{ route('admin.packages.index') }}">🎁 <span>Packages</span></a>
 
     {{-- ✅ DISCOUNT MENU --}}
     <a href="{{ route('admin.discounts.index') }}">🏷️ <span>Discounts</span></a>

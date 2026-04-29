@@ -46,5 +46,50 @@ function toggleSidebar() {
 
 <script src="https://cdn.ckeditor.com/4.21.0/standard/ckeditor.js"></script>
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const qtyInputs = document.querySelectorAll('.qty-input');
+    const totalEl = document.getElementById('total-price');
+    const finalEl = document.getElementById('final-price');
+    const discountType = document.getElementById('discount-type');
+    const discountValue = document.getElementById('discount-value');
+
+    function calculate() {
+        let total = 0;
+
+        qtyInputs.forEach(input => {
+            let qty = parseFloat(input.value) || 0;
+            let price = parseFloat(input.dataset.price) || 0;
+
+            total += qty * price;
+        });
+
+        totalEl.innerText = total.toFixed(2);
+
+        let final = total;
+        let discount = parseFloat(discountValue.value) || 0;
+
+        if (discountType.value === 'percent') {
+            final = total - (total * discount / 100);
+        } else if (discountType.value === 'flat') {
+            final = total - discount;
+        }
+
+        if (final < 0) final = 0;
+
+        finalEl.innerText = final.toFixed(2);
+    }
+
+    qtyInputs.forEach(input => {
+        input.addEventListener('input', calculate);
+    });
+
+    discountType.addEventListener('change', calculate);
+    discountValue.addEventListener('input', calculate);
+
+});
+</script>
+
 </body>
 </html>

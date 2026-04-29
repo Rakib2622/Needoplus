@@ -2,7 +2,7 @@
 @include('customer.partial.navonly')
 
 <!-- Page Header -->
-<div class="container-fluid bg-secondary mb-2">
+<!-- <div class="container-fluid bg-secondary mb-2">
     <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
         <h1 class="font-weight-semi-bold text-uppercase mb-3">Our Shop</h1>
         <div class="d-inline-flex">
@@ -11,7 +11,7 @@
             <p class="m-0">Shop</p>
         </div>
     </div>
-</div>
+</div> -->
 
 <!-- Shop Start -->
 <div class="container-fluid pt-5">

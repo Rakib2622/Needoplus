@@ -60,6 +60,17 @@ public function getDiscountPercentAttribute()
     return round((($this->price - $this->final_price) / $this->price) * 100);
 }
 
+public function packages()
+{
+    return $this->belongsToMany(Package::class)
+                ->withPivot('quantity');
+}
+
+public function orderItems()
+{
+    return $this->hasMany(\App\Models\OrderItem::class);
+}
+
 protected static function boot()
 {
     parent::boot();

@@ -167,7 +167,7 @@
 
             </div>
 
-            {{-- POLICIES }}
+          
             <div class="mt-4">
                 <a href="{{ route('settings.return') }}" class="text-primary mr-3">
                     🔁 Return Policy
