@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\DiscountController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\ReferralController;
 use App\Http\Controllers\PackageController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 
 
 
@@ -49,7 +50,6 @@ Route::get('/auth/google/callback', [SocialAuthController::class, 'handleGoogleC
 
 // Categories
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
-// Route::get('/category/{id}', [CategoryController::class, 'show'])->name('categories.show');
 Route::get('/category/{slug}', [HomeController::class, 'category'])
     ->name('category.show');
 
@@ -71,6 +71,8 @@ Route::prefix('checkout')->group(function () {
     Route::get('/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
     Route::get('/cancel', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
 });
+
+Route::get('/search/products', [ProductController::class, 'search']);
 // Pages
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
@@ -154,6 +156,15 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::resource('discounts', DiscountController::class);
 
         Route::resource('packages', AdminPackageController::class);
+        // 📦 Order list
+        Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+
+        // 📄 Order details
+        Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('orders.show');
+
+        // 🔄 Update order status
+        Route::post('/orders/{id}/status', [AdminOrderController::class, 'updateStatus'])
+            ->name('orders.updateStatus');
     });
 });
 

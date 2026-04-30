@@ -631,30 +631,102 @@ document.addEventListener("DOMContentLoaded", function() {
 {{-- JS --}}
 @isset($total)
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
 
-        let subtotal = {
-            {
-                $total
-            }
-        };
+    // ✅ Get subtotal from DOM (safe way)
+    let subtotal = parseFloat(document.getElementById('subtotal').dataset.value);
 
-        function updateTotal() {
+    function updateTotal() {
 
-            let selected = document.querySelector('input[name="shipping_area"]:checked');
-            if (!selected) return;
+        let selected = document.querySelector('input[name="shipping_area"]:checked');
+        if (!selected) return;
 
-            let shipping = selected.value;
-            let charge = shipping === 'inside' ? 80 : 120;
+        let shippingType = selected.value;
 
-            document.getElementById('shipping').innerText = '৳ ' + charge;
-            document.getElementById('final-total').innerText = '৳ ' + (subtotal + charge);
-        }
+        // ✅ Your required logic
+        let charge = (shippingType === 'inside') ? 80 : 120;
 
-        document.querySelectorAll('.shipping-option').forEach(option => {
-            option.addEventListener('change', updateTotal);
-        });
+        document.getElementById('shipping').innerText = '৳ ' + charge;
+        document.getElementById('final-total').innerText = '৳ ' + (subtotal + charge);
+    }
 
+    // ✅ Run on page load (important)
+    updateTotal();
+
+    // ✅ Listen for change
+    document.querySelectorAll('.shipping-option').forEach(option => {
+        option.addEventListener('change', updateTotal);
     });
+
+});
 </script>
 @endisset
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    let input = document.getElementById("search-input");
+    let resultBox = document.getElementById("search-results");
+
+    let timeout = null;
+
+    input.addEventListener("keyup", function () {
+
+        let query = this.value;
+
+        clearTimeout(timeout);
+
+        // 🔥 delay for better performance
+        timeout = setTimeout(() => {
+
+            if (query.length < 2) {
+                resultBox.style.display = "none";
+                return;
+            }
+
+            fetch(`/search/products?q=${query}`)
+            .then(res => res.json())
+            .then(data => {
+
+                resultBox.innerHTML = "";
+
+                if (data.length === 0) {
+                    resultBox.innerHTML = `<div class="p-2 text-muted">No results found</div>`;
+                    resultBox.style.display = "block";
+                    return;
+                }
+
+                data.forEach(product => {
+
+                    resultBox.innerHTML += `
+                        <a href="/product/${product.slug}"
+                           class="d-flex align-items-center p-2 border-bottom text-dark text-decoration-none">
+
+                            <img src="${product.image ? '/storage/' + product.image : '/assets/img/no-image.png'}"
+                                 style="width:40px;height:40px;object-fit:cover;margin-right:10px;">
+
+                            <div>
+                                <div style="font-size:14px;">${product.name}</div>
+                                <small class="text-muted">৳${product.price}</small>
+                            </div>
+
+                        </a>
+                    `;
+                });
+
+                resultBox.style.display = "block";
+            });
+
+        }, 300); // debounce
+
+    });
+
+    // 🔴 click outside = close
+    document.addEventListener("click", function(e) {
+        if (!input.contains(e.target)) {
+            resultBox.style.display = "none";
+        }
+    });
+
+});
+</script>

@@ -9812,3 +9812,223 @@ a.text-dark:hover, a.text-dark:focus {
     transform: translateY(-15px);
   }
 }
+
+
+/* 🔍 SEARCH BOX */
+.search-box {
+    background: rgba(255,255,255,0.15);
+    border-radius: 30px;
+    padding: 3px 10px;
+    transition: all 0.3s ease;
+}
+
+.search-box input {
+    background: transparent;
+    color: #fff;
+    font-size: 14px;
+}
+
+.search-box input::placeholder {
+    color: rgba(255,255,255,0.7);
+}
+
+.search-box:focus-within {
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
+}
+
+.search-box:focus-within input {
+    color: #333;
+}
+
+.search-box:focus-within .search-icon i {
+    color: #53c3d2;
+}
+
+/* 🔍 ICON */
+.search-icon {
+    background: transparent;
+}
+
+.search-icon i {
+    color: #fff;
+    transition: 0.3s;
+}
+
+/* 📦 DROPDOWN */
+.search-dropdown {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    overflow: hidden;
+    display: none;
+    z-index: 999;
+}
+
+/* 🧾 ITEM */
+.search-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    transition: 0.25s;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.search-item:hover {
+    background: #f8f9fa;
+}
+
+/* 🖼 IMAGE */
+.search-item img {
+    width: 45px;
+    height: 45px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-right: 10px;
+}
+
+/* 📄 TEXT */
+.search-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+.search-price {
+    font-size: 12px;
+    color: #888;
+}
+
+/* 🔥 HIGHLIGHT */
+.highlight {
+    color: #53c3d2;
+    font-weight: 600;
+}
+
+/* 📱 SCROLL */
+.search-dropdown {
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.search-dropdown::-webkit-scrollbar {
+    width: 4px;
+}
+.search-dropdown::-webkit-scrollbar-thumb {
+    background: #ddd;
+}
+
+/* 🔥 CARD */
+.carousel-card {
+    position: relative;
+    height: 460px;
+    border-radius: 14px;
+    overflow: hidden;
+
+    /* ✨ LIGHT SHADOW (desktop) */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+/* IMAGE */
+.carousel-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* OVERLAY (cleaner) */
+.carousel-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to right,
+        rgba(0,0,0,0.1),
+        rgba(0,0,0,0.01)
+    );
+}
+
+/* CONTENT */
+.carousel-content {
+    position: absolute;
+    left: 50px;
+    bottom: 50px;
+    color: #fff;
+}
+
+/* TITLE */
+.carousel-title {
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+/* BUTTON (brand feel) */
+.carousel-btn {
+    display: inline-block;
+    background: #fff;
+    color: #333;
+    padding: 8px 22px;
+    border-radius: 30px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.carousel-btn:hover {
+    background: #53c3d2;
+    color: #fff;
+}
+
+/* CONTROLS */
+.carousel-arrow {
+    background: rgba(255,255,255,0.9);
+    color: #333;
+    font-size: 22px;
+    padding: 6px 14px;
+    border-radius: 50%;
+}
+
+/* 🔥 HOVER (SUBTLE) */
+.carousel-card:hover img {
+    transform: scale(1.03);
+    transition: 0.5s;
+}
+
+/* 📱 MOBILE FIX */
+@media (max-width: 768px) {
+
+    .carousel-card {
+        height: 240px;
+
+        /* ❌ REMOVE HEAVY SHADOW */
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+
+        border-radius: 10px;
+    }
+
+    .carousel-content {
+        left: 20px;
+        bottom: 20px;
+    }
+
+    .carousel-title {
+        font-size: 16px;
+    }
+
+    .carousel-btn {
+        padding: 5px 12px;
+        font-size: 12px;
+    }
+
+    .carousel-arrow {
+        font-size: 16px;
+        padding: 4px 10px;
+    }
+}
+
+
+

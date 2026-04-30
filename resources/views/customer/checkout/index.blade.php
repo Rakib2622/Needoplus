@@ -54,14 +54,14 @@
                         <div class="custom-control custom-radio">
                             <input type="radio" id="inside" name="shipping_area" value="inside" class="custom-control-input shipping-option" checked>
                             <label class="custom-control-label" for="inside">
-                                Inside Dhaka (৳ 120)
+                                Inside Dhaka (৳ 80)
                             </label>
                         </div>
 
                         <div class="custom-control custom-radio">
                             <input type="radio" id="outside" name="shipping_area" value="outside" class="custom-control-input shipping-option">
                             <label class="custom-control-label" for="outside">
-                                Outside Dhaka (৳ 80)
+                                Outside Dhaka (৳ 120)
                             </label>
                         </div>
                     </div>
@@ -137,14 +137,14 @@
 
                 <div class="d-flex justify-content-between">
                     <span>Shipping</span>
-                    <span id="shipping">৳ 120</span>
+                    <span id="shipping">৳ 80</span>
                 </div>
 
                 <hr>
 
                 <div class="d-flex justify-content-between font-weight-bold">
                     <span>Total</span>
-                    <span id="final-total">৳ {{ number_format($subtotal + 120, 0) }}</span>
+                    <span id="final-total">৳ {{ number_format($subtotal + 80, 0) }}</span>
                 </div>
 
                 <p class="text-muted small mt-2">

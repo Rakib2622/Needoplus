@@ -35,8 +35,8 @@ class OrderItem extends Model
         return $this->belongsTo(Package::class);
     }
 
-    public function orderItems()
-    {
-        return $this->hasMany(\App\Models\OrderItem::class);
-    }
+    // public function orderItems()
+    // {
+    //     return $this->hasMany(\App\Models\OrderItem::class);
+    // }
 }

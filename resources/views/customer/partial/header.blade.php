@@ -63,32 +63,38 @@
             <!-- LOGO -->
             <div class="col-lg-3 d-none d-lg-block">
                 <a href="{{ route('home') }}"
-               class="d-flex align-items-center text-decoration-none mb-3">
+                    class="d-flex align-items-center text-decoration-none mb-3">
 
-                <img src="{{ asset('assets/img/logg.png') }}" style="height:50px;">
+                    <img src="{{ asset('assets/img/logg.png') }}" style="height:50px;">
 
                     <span class="silver-text">NEEDO+</span>
-            
-            </a>
+
+                </a>
             </div>
 
             <!-- SEARCH -->
-            <div class="col-lg-6 col-6 text-left">
-                <form action="{{ route('products.index') }}" method="GET">
-                    <div class="input-group">
-                        <input type="text"
-                            name="search"
-                            class="form-control"
-                            placeholder="Search for products..."
-                            value="{{ request('search') }}">
+            <div class="col-lg-6 col-6 position-relative">
 
-                        <div class="input-group-append">
-                            <button type="submit" class="input-group-text bg-transparent border-0">
-                                <i class="fa fa-search" style="color:#ffffff;"></i>
-                            </button>
-                        </div>
+                <div class="input-group search-box">
+
+                    <input type="text"
+                        id="search-input"
+                        class="form-control border-0"
+                        placeholder="Search for products...">
+
+                    <div class="input-group-append">
+                        <span class="input-group-text border-0 search-icon">
+                            <i class="fa fa-search"></i>
+                        </span>
                     </div>
-                </form>
+
+                </div>
+
+                <!-- 🔥 PREMIUM RESULT BOX -->
+                <div id="search-results" class="search-dropdown">
+                    <div class="text-center py-3 text-muted">Start typing...</div>
+                </div>
+
             </div>
 
             <!-- RIGHT ICONS -->

@@ -105,6 +105,18 @@ public function index(Request $request)
 }
 
 
+public function search(Request $request)
+{
+    $query = $request->q;
+
+    $products = Product::where('name', 'LIKE', "%{$query}%")
+        ->take(5)
+        ->get();
+
+    return response()->json($products);
+}
+
+
 
 
 public function show($slug)

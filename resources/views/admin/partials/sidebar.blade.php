@@ -10,8 +10,8 @@
     {{-- ✅ DISCOUNT MENU --}}
     <a href="{{ route('admin.discounts.index') }}">🏷️ <span>Discounts</span></a>
 
-    <a href="#">🧾 <span>Orders</span></a>
-    <a href="#">👤 <span>Users</span></a>
+    <a href="{{ route('admin.orders.index') }}">🧾 <span>Orders</span></a>
+    <a href=#>👤 <span>Users</span></a>
 
     <hr>
 

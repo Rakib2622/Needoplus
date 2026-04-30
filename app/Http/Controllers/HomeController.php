@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Discount;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -19,10 +21,9 @@ public function index()
         ->orderBy('products_count', 'desc')
         ->get();
 
-    // 👉 Home category grid
     $homeCategories = $navCategories->take(6);
 
-    // 👉 STEP 1: Get 1 product from each category
+    // 👉 PRODUCTS (your existing logic)
     $categoryProducts = Product::where('is_active', true)
         ->select('products.*')
         ->join(DB::raw('(SELECT MIN(id) as id FROM products WHERE is_active = 1 GROUP BY category_id) as grouped'), function ($join) {
@@ -30,20 +31,52 @@ public function index()
         })
         ->get();
 
-    // 👉 STEP 2: Get additional latest products
     $remainingProducts = Product::where('is_active', true)
         ->whereNotIn('id', $categoryProducts->pluck('id'))
         ->latest()
-        ->take(8 - $categoryProducts->count()) // total 8 products
+        ->take(8 - $categoryProducts->count())
         ->get();
 
-    // 👉 Merge both
     $products = $categoryProducts->merge($remainingProducts);
+
+    // 🔥 NEW: Get active discount banner
+    $discount = Discount::where('is_active', 1)
+        ->whereDate('start_date', '<=', Carbon::now())
+        ->whereDate('end_date', '>=', Carbon::now())
+        ->latest()
+        ->first();
+
+    // 🔥 BUILD REDIRECT URL
+    $discountUrl = route('products.index'); // default fallback
+
+    if ($discount) {
+
+        if ($discount->type === 'category' && $discount->category_id) {
+
+            $category = Category::find($discount->category_id);
+
+            if ($category) {
+                $discountUrl = route('category.show', $category->slug);
+            }
+
+        } elseif ($discount->type === 'product' && $discount->product_id) {
+
+            $product = Product::find($discount->product_id);
+
+            if ($product) {
+                $discountUrl = route('product.show', $product->slug);
+            }
+
+        }
+        // global → stays shop page
+    }
 
     return view('customer.home', compact(
         'navCategories',
         'homeCategories',
-        'products'
+        'products',
+        'discount',
+        'discountUrl' // 🔥 pass this
     ));
 }
 

@@ -79,7 +79,7 @@
         <!-- QUICK LINKS -->
         <div class="col-lg-2 col-md-6 mb-4">
 
-            <h6 class="mb-3 font-weight-bold" style="letter-spacing:1px;">Quick Links</h6>
+            <h6 class="mb-3 text-light font-weight-bold" style="letter-spacing:1px;">Quick Links</h6>
 
             <ul class="list-unstyled footer-links">
                 <li><a href="{{ route('home') }}">Home</a></li>
@@ -94,7 +94,7 @@
         <!-- SUPPORT -->
         <div class="col-lg-3 col-md-6 mb-4">
 
-            <h6 class="mb-3 font-weight-bold" style="letter-spacing:1px;">Support</h6>
+            <h6 class="mb-3 text-light font-weight-bold" style="letter-spacing:1px;">Support</h6>
 
             <ul class="list-unstyled footer-links">
                 <li><a href="{{ route('settings.help') }}">Help & Support</a></li>
@@ -109,7 +109,7 @@
         <!-- SOCIAL -->
         <div class="col-lg-3 col-md-6 mb-4">
 
-            <h6 class="mb-3 font-weight-bold" style="letter-spacing:1px;">Connect</h6>
+            <h6 class="mb-3 text-light font-weight-bold" style="letter-spacing:1px;">Connect</h6>
 
             <div class="d-flex mb-3">
 
