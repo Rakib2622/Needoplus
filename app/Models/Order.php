@@ -14,7 +14,9 @@ class Order extends Model
         'note',
         'total_amount',
         'payment_method',
-        'status'
+        'status',
+        'tracking_code',
+        'consignment_id',
     ];
 
     // 🔗 Order → Items

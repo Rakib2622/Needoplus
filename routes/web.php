@@ -165,6 +165,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
         // 🔄 Update order status
         Route::post('/orders/{id}/status', [AdminOrderController::class, 'updateStatus'])
             ->name('orders.updateStatus');
+
+        Route::post('/orders/{id}/send-to-courier', [AdminOrderController::class, 'sendToCourier'])
+            ->name('orders.sendCourier');
     });
 });
 

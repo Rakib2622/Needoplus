@@ -163,137 +163,172 @@
         {{-- RIGHT SIDE --}}
         <div class="col-lg-4">
 
-            {{-- 👤 CUSTOMER INFO --}}
-            <div class="card shadow-sm border-0 mb-4">
-                <div class="card-header bg-white">
-                    <strong>👤 Customer Info</strong>
+    {{-- 👤 CUSTOMER INFO --}}
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white">
+            <strong>👤 Customer Info</strong>
+        </div>
+
+        <div class="card-body">
+            <p><strong>Name:</strong> {{ $order->name }}</p>
+            <p><strong>Phone:</strong> {{ $order->phone }}</p>
+            <p><strong>Address:</strong><br>{{ $order->address }}</p>
+
+            @if($order->note)
+                <p><strong>Note:</strong><br>{{ $order->note }}</p>
+            @endif
+        </div>
+    </div>
+
+    {{-- 🚚 COURIER + STATUS --}}
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white">
+            <strong>🚚 Courier & Status</strong>
+        </div>
+
+        <div class="card-body">
+
+            @php
+                $statusColors = [
+                    'pending' => '#6c757d',
+                    'packaging' => '#17a2b8',
+                    'shipped' => '#007bff',
+                    'delivered' => '#28a745',
+                    'returned' => '#ffc107',
+                    'declined' => '#dc3545',
+                    'completed' => '#343a40',
+                ];
+            @endphp
+
+            {{-- 🔄 STATUS DROPDOWN (CENTER FOCUS) --}}
+            <form action="{{ route('admin.orders.updateStatus', $order->id) }}" method="POST" class="mb-3">
+                @csrf
+
+                <label class="mb-1"><strong>Order Status</strong></label>
+
+                <select name="status"
+                    onchange="this.form.submit()"
+                    class="form-control text-white fw-bold text-center"
+                    style="
+                        background: {{ $statusColors[$order->status] ?? '#6c757d' }};
+                        border:none;
+                        border-radius:10px;
+                        font-size:15px;
+                    ">
+
+                    @foreach($statusColors as $status => $color)
+                        <option value="{{ $status }}"
+                            {{ $order->status == $status ? 'selected' : '' }}>
+                            {{ strtoupper($status) }}
+                        </option>
+                    @endforeach
+
+                </select>
+            </form>
+
+            <hr>
+
+            {{-- 📦 COURIER INFO --}}
+            @if($order->tracking_code)
+
+                <div class="mb-3">
+                    <p class="mb-1"><strong>Consignment ID:</strong></p>
+                    <div class="text-dark fw-bold">
+                        {{ $order->consignment_id }}
+                    </div>
                 </div>
 
-                <div class="card-body">
-
-                    <p><strong>Name:</strong> {{ $order->name }}</p>
-                    <p><strong>Phone:</strong> {{ $order->phone }}</p>
-                    <p><strong>Address:</strong><br>{{ $order->address }}</p>
-
-                    @if($order->note)
-                    <p><strong>Note:</strong><br>{{ $order->note }}</p>
-                    @endif
-
-                </div>
-            </div>
-
-            {{-- 💳 SUMMARY --}}
-            <div class="card shadow-sm border-0 mb-4">
-                <div class="card-header bg-white">
-                    <strong>💳 Summary</strong>
+                <div class="mb-3">
+                    <p class="mb-1"><strong>Tracking Code:</strong></p>
+                    <div class="text-primary fw-bold">
+                        {{ $order->tracking_code }}
+                    </div>
                 </div>
 
-                <div class="card-body">
+                {{-- TRACK BUTTON --}}
+                <a href="https://steadfast.com.bd/tracking?code={{ $order->tracking_code }}"
+                    target="_blank"
+                    class="btn btn-dark w-100">
+                    📦 Track Parcel
+                </a>
 
-                    <p>
-                        <strong>Subtotal:</strong>
-                        <span class="float-end">৳ {{ number_format($subtotal, 2) }}</span>
-                    </p>
+            @else
 
-                    <p>
-                        <strong>Shipping:</strong>
-                        <span class="float-end">
-                            ৳ {{ number_format($shipping, 2) }}
-                        </span>
-                    </p>
+                {{-- SEND BUTTON --}}
+                <form action="{{ route('admin.orders.sendCourier', $order->id) }}" method="POST">
+                    @csrf
 
-                    <hr>
+                    <button class="btn btn-success w-100"
+                        onclick="return confirm('Send this order to courier?')">
+                        🚚 Send to Courier
+                    </button>
+                </form>
 
-                    <h5>
-                        <strong>Total:</strong>
-                        <span class="float-end text-success">
-                            ৳ {{ number_format($order->total_amount, 2) }}
-                        </span>
-                    </h5>
+                <small class="text-muted d-block mt-2 text-center">
+                    Not sent to courier yet
+                </small>
 
-                    <hr>
-
-                    <p>
-                        <strong>Payment:</strong>
-                        <span class="float-end text-muted">
-                            {{ strtoupper($order->payment_method) }}
-                        </span>
-                    </p>
-
-                    <p>
-                        <strong>Status:</strong>
-                        <span class="float-end">
-
-                            @php
-                            $statusColors = [
-                            'pending' => '#6c757d',
-                            'packaging' => '#17a2b8',
-                            'shipped' => '#007bff',
-                            'delivered' => '#28a745',
-                            'returned' => '#ffc107',
-                            'declined' => '#dc3545',
-                            'completed' => '#343a40',
-                            ];
-                            @endphp
-
-                            <span style="
-                                padding:5px 10px;
-                                border-radius:6px;
-                                color:#fff;
-                                background: {{ $statusColors[$order->status] ?? '#6c757d' }};
-                                font-size:12px;
-                            ">
-                                {{ ucfirst($order->status) }}
-                            </span>
-
-                        </span>
-                    </p>
-
-                    <hr>
-
-                    {{-- STATUS UPDATE --}}
-                    <form action="{{ route('admin.orders.updateStatus', $order->id) }}" method="POST">
-                        @csrf
-
-                        <label class="mb-1"><strong>Update Status</strong></label>
-
-                        <select name="status"
-                            onchange="this.form.submit()"
-                            class="form-control text-white fw-bold"
-                            style="
-                                background: {{ $statusColors[$order->status] ?? '#6c757d' }};
-                                border:none;
-                                border-radius:8px;
-                            ">
-
-                            @foreach($statusColors as $status => $color)
-                            <option value="{{ $status }}"
-                                {{ $order->status == $status ? 'selected' : '' }}>
-                                {{ ucfirst($status) }}
-                            </option>
-                            @endforeach
-
-                        </select>
-                    </form>
-
-                </div>
-            </div>
-
-            {{-- 🕒 TIME --}}
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white">
-                    <strong>🕒 Order Time</strong>
-                </div>
-
-                <div class="card-body text-center">
-                    <h5>{{ $order->created_at->format('d M Y') }}</h5>
-                    <p class="text-muted mb-0">
-                        {{ $order->created_at->format('h:i A') }}
-                    </p>
-                </div>
-            </div>
+            @endif
 
         </div>
+    </div>
+
+    {{-- 💳 SUMMARY --}}
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white">
+            <strong>💳 Summary</strong>
+        </div>
+
+        <div class="card-body">
+
+            <p>
+                <strong>Subtotal:</strong>
+                <span class="float-end">৳ {{ number_format($subtotal, 2) }}</span>
+            </p>
+
+            <p>
+                <strong>Shipping:</strong>
+                <span class="float-end">
+                    ৳ {{ number_format($shipping, 2) }}
+                </span>
+            </p>
+
+            <hr>
+
+            <h5>
+                <strong>Total:</strong>
+                <span class="float-end text-success">
+                    ৳ {{ number_format($order->total_amount, 2) }}
+                </span>
+            </h5>
+
+            <hr>
+
+            <p>
+                <strong>Payment:</strong>
+                <span class="float-end text-muted">
+                    {{ strtoupper($order->payment_method) }}
+                </span>
+            </p>
+
+        </div>
+    </div>
+
+    {{-- 🕒 TIME --}}
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white">
+            <strong>🕒 Order Time</strong>
+        </div>
+
+        <div class="card-body text-center">
+            <h5>{{ $order->created_at->format('d M Y') }}</h5>
+            <p class="text-muted mb-0">
+                {{ $order->created_at->format('h:i A') }}
+            </p>
+        </div>
+    </div>
+
+</div>
 
 </div>
 
