@@ -27,7 +27,7 @@ class CheckoutController extends Controller
     // ✅ VALIDATION
     $request->validate([
         'name' => 'required|string|max:255',
-        'phone' => 'required|string|max:20',
+        'phone' => 'required|string|max:11',
         'address' => 'required|string',
         'shipping_area' => 'required|in:inside,outside',
         'payment_method' => 'required|in:cod',

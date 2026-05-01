@@ -64,15 +64,15 @@
                             <p><strong>Address:</strong> {{ auth()->user()->address ?? 'Not set' }}</p>
 
                             <!-- Referral Code -->
-                            <p>
+                            <!-- <p>
                                 <strong>Referral Code:</strong>
                                 <span class="badge badge-info">
                                     {{ auth()->user()->referral_code }}
                                 </span>
-                            </p>
+                            </p> -->
 
                             <!-- Referral Link -->
-                            <p>
+                            <!-- <p>
                                 <strong>Referral Link:</strong><br>
 
                                 @php
@@ -88,13 +88,13 @@
                                 <small class="text-muted">
                                     Click to copy your referral link
                                 </small>
-                            </p>
+                            </p> -->
 
                             <!-- Referred By -->
-                            <p>
+                            <!-- <p>
                                 <strong>Referred By:</strong>
                                 {{ auth()->user()->referrer->name ?? 'No referrer' }}
-                            </p>
+                            </p> -->
 
                         </div>
 

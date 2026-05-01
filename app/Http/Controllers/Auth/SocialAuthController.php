@@ -66,7 +66,7 @@ class SocialAuthController extends Controller
             /**
              * 🔥 IMPORTANT: go to referral page (not home)
              */
-            return redirect()->route('referral.complete');
+            return redirect()->route('home');
 
         } catch (\Exception $e) {
             return redirect()->route('login')

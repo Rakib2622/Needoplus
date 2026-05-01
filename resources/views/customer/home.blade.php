@@ -35,10 +35,16 @@
 </div>
 <!-- Featured End -->
 
-
+<div class="text-center">
+        <h2 class="section-title px-5">
+            <span class="px-2">Categories</span>
+        </h2>
+    </div>
 <!-- Categories Start -->
 <div class="container-fluid pt-5">
     <div class="row px-xl-5 pb-3">
+
+    
 
         @foreach($homeCategories as $category)
 
@@ -94,4 +100,5 @@
     @include('customer.partial.products')
 </div>
 
+@include('customer.partial.review')
 @include('customer.partial.footer')

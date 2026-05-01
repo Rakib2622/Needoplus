@@ -42,7 +42,7 @@
                         </div>
 
                         <!-- Referral Code -->
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label>Referral Code (Optional)</label>
 
                             <input type="text"
@@ -58,7 +58,7 @@
                             <small class="text-muted">
                                 If someone invited you, enter their referral code.
                             </small>
-                        </div>
+                        </div> -->
 
                         <!-- Password -->
                         <div class="form-group">

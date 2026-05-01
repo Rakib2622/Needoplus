@@ -76,11 +76,11 @@
                         </div>
 
                         <!-- Referral Code (READ ONLY) -->
-                        <div class="form-group mb-3">
+                        <!-- <div class="form-group mb-3">
                             <label>Referral Code</label>
                             <input type="text" class="form-control"
                                    value="{{ $user->referral_code }}" readonly>
-                        </div>
+                        </div> -->
 
                         <!-- Submit -->
                         <button class="btn btn-primary">
