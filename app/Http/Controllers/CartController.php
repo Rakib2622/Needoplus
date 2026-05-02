@@ -8,16 +8,22 @@ use App\Models\Package;
 
 class CartController extends Controller
 {
+    // ===============================
+    // 🛒 CART PAGE
+    // ===============================
     public function index()
     {
         return view('customer.cart.index');
     }
 
+    // ===============================
+    // ➕ ADD TO CART
+    // ===============================
     public function add(Request $request)
     {
         $cart = session()->get('cart', []);
 
-        $qty = $request->quantity ?? 1;
+        $qty = (int) ($request->quantity ?? 1);
 
         // ===============================
         // 🟢 ADD PRODUCT
@@ -28,19 +34,34 @@ class CartController extends Controller
 
             $color = $request->color ?? null;
 
-            // 🔑 Unique key (important)
+            // 🔑 Unique key
             $key = 'product_' . $product->id . '_' . ($color ?? 'no_color');
 
+            // 🔥 Limit initial qty
+            if ($qty > $product->stock) {
+                $qty = $product->stock;
+            }
+
             if (isset($cart[$key])) {
-                $cart[$key]['quantity'] += $qty;
+
+                $newQty = $cart[$key]['quantity'] + $qty;
+
+                // 🔥 Limit total qty
+                if ($newQty > $product->stock) {
+                    $newQty = $product->stock;
+                }
+
+                $cart[$key]['quantity'] = $newQty;
+
             } else {
+
                 $cart[$key] = [
                     "type" => "product",
                     "id" => $product->id,
                     "name" => $product->name,
                     "price" => $product->final_price,
                     "image" => $product->image,
-                    "quantity" => $qty,
+                    "quantity" => min($qty, $product->stock),
                     "color" => $color
                 ];
             }
@@ -49,7 +70,7 @@ class CartController extends Controller
         }
 
         // ===============================
-        // 🔵 ADD PACKAGE
+        // 🔵 ADD PACKAGE (NO STOCK LIMIT FOR NOW)
         // ===============================
         elseif ($request->type === 'package') {
 
@@ -84,23 +105,39 @@ class CartController extends Controller
     }
 
     // ===============================
-    // 🔄 UPDATE QUANTITY
+    // 🔄 UPDATE CART
     // ===============================
-public function update(Request $request)
-{
-    $cart = session()->get('cart', []);
+    public function update(Request $request)
+    {
+        $cart = session()->get('cart', []);
 
-    foreach ($request->items as $key => $data) {
+        foreach ($request->items as $key => $data) {
 
-        if (isset($cart[$key])) {
+            if (!isset($cart[$key])) continue;
 
-            $qty = $data['quantity'];
+            $qty = (int) $data['quantity'];
 
+            // ❌ remove if invalid
             if ($qty <= 0) {
                 unset($cart[$key]);
                 continue;
             }
 
+            // ===============================
+            // 🔥 STOCK CHECK
+            // ===============================
+            if ($cart[$key]['type'] === 'product') {
+
+                $product = Product::find($cart[$key]['id']);
+
+                if ($product) {
+                    if ($qty > $product->stock) {
+                        $qty = $product->stock;
+                    }
+                }
+            }
+
+            // update quantity
             $cart[$key]['quantity'] = $qty;
 
             // update color
@@ -108,74 +145,77 @@ public function update(Request $request)
                 $cart[$key]['color'] = $data['color'];
             }
         }
+
+        session()->put('cart', $cart);
+
+        return response()->json([
+            'success' => true,
+            'cart' => $cart
+        ]);
     }
-
-    session()->put('cart', $cart);
-
-    // 🔥 return JSON for AJAX
-    return response()->json([
-        'success' => true,
-        'cart' => $cart
-    ]);
-}
 
     // ===============================
     // ❌ REMOVE ITEM
     // ===============================
     public function remove($key)
-{
-    $cart = session()->get('cart', []);
+    {
+        $cart = session()->get('cart', []);
 
-    if (isset($cart[$key])) {
-        unset($cart[$key]);
+        if (isset($cart[$key])) {
+            unset($cart[$key]);
+        }
+
+        session()->put('cart', $cart);
+
+        return response()->json([
+            'success' => true
+        ]);
     }
 
-    session()->put('cart', $cart);
-
-    return response()->json([
-        'success' => true
-    ]);
-}
-
+    // ===============================
+    // 🔢 CART COUNT
+    // ===============================
     public function count()
-{
-    $cart = session()->get('cart', []);
+    {
+        $cart = session()->get('cart', []);
 
-    // যদি quantity থাকে
-    $count = collect($cart)->sum('quantity');
+        $count = collect($cart)->sum('quantity');
 
-    return response()->json([
-        'count' => $count
-    ]);
-}
-
-public function preview()
-{
-    $cart = session()->get('cart', []);
-
-    $items = [];
-    $total = 0;
-
-    foreach ($cart as $key => $item) {
-
-        $subtotal = $item['price'] * $item['quantity'];
-        $total += $subtotal;
-
-        $items[] = [
-            'key' => $key,
-            'name' => $item['name'],
-            'price' => $item['price'],
-            'quantity' => $item['quantity'],
-            'image' => $item['image'],
-            'color' => $item['color'],
-            'type' => $item['type'],
-            'subtotal' => $subtotal
-        ];
+        return response()->json([
+            'count' => $count
+        ]);
     }
 
-    return response()->json([
-        'items' => $items,
-        'total' => $total
-    ]);
-}
+    // ===============================
+    // 👁️ CART PREVIEW
+    // ===============================
+    public function preview()
+    {
+        $cart = session()->get('cart', []);
+
+        $items = [];
+        $total = 0;
+
+        foreach ($cart as $key => $item) {
+
+            $subtotal = $item['price'] * $item['quantity'];
+            $total += $subtotal;
+
+            $items[] = [
+                'key' => $key,
+                'name' => $item['name'],
+                'price' => $item['price'],
+                'quantity' => $item['quantity'],
+                'image' => $item['image'],
+                'color' => $item['color'],
+                'type' => $item['type'],
+                'subtotal' => $subtotal
+            ];
+        }
+
+        return response()->json([
+            'items' => $items,
+            'total' => $total
+        ]);
+    }
 }

@@ -9,8 +9,8 @@
         </div>
 
         @php
-            $cart = session('cart', []);
-            $total = 0;
+        $cart = session('cart', []);
+        $total = 0;
         @endphp
 
         @if(count($cart) > 0)
@@ -32,16 +32,16 @@
 
                     <tbody>
 
-                    @foreach($cart as $key => $item)
+                        @foreach($cart as $key => $item)
 
                         @php
-                            $subtotal = $item['price'] * $item['quantity'];
-                            $total += $subtotal;
+                        $subtotal = $item['price'] * $item['quantity'];
+                        $total += $subtotal;
 
-                            $product = null;
-                            if($item['type'] == 'product'){
-                                $product = \App\Models\Product::find($item['id']);
-                            }
+                        $product = null;
+                        if($item['type'] == 'product'){
+                        $product = \App\Models\Product::find($item['id']);
+                        }
                         @endphp
 
                         <tr>
@@ -50,37 +50,37 @@
                             <td class="text-left d-flex align-items-center" style="gap:10px;">
 
                                 <img src="{{ $item['image'] ? asset('storage/' . $item['image']) : asset('assets/img/no-image.png') }}"
-                                     style="width:60px;height:60px;object-fit:cover;">
+                                    style="width:60px;height:60px;object-fit:cover;">
 
                                 <div>
 
                                     {{ $item['name'] }}
 
                                     @if($item['type'] == 'package')
-                                        <br><small class="text-info">Package</small>
+                                    <br><small class="text-info">Package</small>
                                     @endif
 
                                     {{-- COLOR SELECT --}}
                                     @if($product && $product->colors)
 
-                                        <div class="mt-1">
-                                            <select class="form-control form-control-sm color-select"
-                                                    data-key="{{ $key }}">
+                                    <div class="mt-1">
+                                        <select class="form-control form-control-sm color-select"
+                                            data-key="{{ $key }}">
 
-                                                <option value="">Select Color</option>
+                                            <option value="">Select Color</option>
 
-                                                @foreach($product->colors as $color)
-                                                    <option value="{{ $color }}"
-                                                        {{ $item['color'] == $color ? 'selected' : '' }}>
-                                                        {{ ucfirst($color) }}
-                                                    </option>
-                                                @endforeach
+                                            @foreach($product->colors as $color)
+                                            <option value="{{ $color }}"
+                                                {{ $item['color'] == $color ? 'selected' : '' }}>
+                                                {{ ucfirst($color) }}
+                                            </option>
+                                            @endforeach
 
-                                            </select>
-                                        </div>
+                                        </select>
+                                    </div>
 
                                     @elseif($item['color'])
-                                        <br><small>Color: {{ $item['color'] }}</small>
+                                    <br><small>Color: {{ $item['color'] }}</small>
                                     @endif
 
                                 </div>
@@ -88,13 +88,23 @@
                             </td>
 
                             {{-- PRICE --}}
-                           <td>৳ {{ number_format($item['price'], 0) }}</td>
+                            <td>৳ {{ number_format($item['price'], 0) }}</td>
 
                             {{-- QUANTITY --}}
                             <td class="align-middle">
 
+                                @php
+                                $stock = null;
+
+                                if ($item['type'] === 'product') {
+                                $product = \App\Models\Product::find($item['id']);
+                                $stock = $product ? $product->stock : 0;
+                                }
+                                @endphp
+
                                 <div class="input-group quantity mx-auto" style="width: 110px;">
 
+                                    <!-- ➖ MINUS -->
                                     <div class="input-group-btn">
                                         <button type="button"
                                             class="btn btn-sm btn-primary btn-minus"
@@ -103,20 +113,32 @@
                                         </button>
                                     </div>
 
-                                    <input type="text"
-                                           value="{{ $item['quantity'] }}"
-                                           class="form-control form-control-sm bg-secondary text-center qty-input"
-                                           data-key="{{ $key }}">
+                                    <!-- 🔢 INPUT -->
+                                    <input type="number"
+                                        value="{{ $item['quantity'] }}"
+                                        min="1"
+                                        max="{{ $stock ?? 999 }}"
+                                        class="form-control form-control-sm bg-secondary text-center qty-input"
+                                        data-key="{{ $key }}">
 
+                                    <!-- ➕ PLUS -->
                                     <div class="input-group-btn">
                                         <button type="button"
                                             class="btn btn-sm btn-primary btn-plus"
-                                            data-key="{{ $key }}">
+                                            data-key="{{ $key }}"
+                                            {{ ($stock !== null && $item['quantity'] >= $stock) ? 'disabled' : '' }}>
                                             <i class="fa fa-plus"></i>
                                         </button>
                                     </div>
 
                                 </div>
+
+                                <!-- ⚠️ STOCK WARNING -->
+                                @if($stock !== null && $item['quantity'] >= $stock)
+                                <small class="text-danger d-block text-center mt-1">
+                                    Max stock reached
+                                </small>
+                                @endif
 
                             </td>
 
@@ -134,7 +156,7 @@
 
                         </tr>
 
-                    @endforeach
+                        @endforeach
 
                     </tbody>
 
@@ -160,7 +182,7 @@
                 </p>
 
                 <a href="{{ route('checkout.index') }}"
-                   class="btn btn-success w-100 mt-3">
+                    class="btn btn-success w-100 mt-3">
                     Proceed to Checkout
                 </a>
 

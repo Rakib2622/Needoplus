@@ -19,6 +19,7 @@ use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\ReferralController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\AdminController;
 
 
 
@@ -139,37 +140,31 @@ Route::middleware('auth')->group(function () {
 
 
 
-Route::middleware(['auth', 'admin'])->group(function () {
+Route::middleware(['auth', 'admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
 
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
-
-    Route::prefix('admin')->name('admin.')->group(function () {
+        // Dashboard
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])
+            ->name('dashboard');
 
         // Category CRUD
         Route::resource('categories', AdminCategoryController::class);
 
-        // ✅ Product CRUD
+        // Product CRUD
         Route::resource('products', AdminProductController::class);
 
         Route::resource('discounts', DiscountController::class);
 
         Route::resource('packages', AdminPackageController::class);
-        // 📦 Order list
+
+        // Orders
         Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
-
-        // 📄 Order details
         Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('orders.show');
-
-        // 🔄 Update order status
-        Route::post('/orders/{id}/status', [AdminOrderController::class, 'updateStatus'])
-            ->name('orders.updateStatus');
-
-        Route::post('/orders/{id}/send-to-courier', [AdminOrderController::class, 'sendToCourier'])
-            ->name('orders.sendCourier');
+        Route::post('/orders/{id}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
+        Route::post('/orders/{id}/send-to-courier', [AdminOrderController::class, 'sendToCourier'])->name('orders.sendCourier');
     });
-});
 
 
 /*

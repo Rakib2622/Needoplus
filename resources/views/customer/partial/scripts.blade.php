@@ -336,104 +336,168 @@
 
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function() {
 
-        function updateCart() {
+    function updateCart() {
 
-            let items = {};
+        let items = {};
 
-            // collect all cart data
-            document.querySelectorAll('.qty-input').forEach(input => {
+        document.querySelectorAll('.qty-input').forEach(input => {
 
-                let key = input.dataset.key;
-                let qty = parseInt(input.value) || 1;
+            let key = input.dataset.key;
+            let qty = parseInt(input.value) || 1;
 
-                let colorSelect = document.querySelector('.color-select[data-key="' + key + '"]');
+            let max = parseInt(input.getAttribute('max')) || 999;
 
-                items[key] = {
-                    quantity: qty,
-                    color: colorSelect ? colorSelect.value : null
-                };
-            });
+            // 🔥 Clamp to stock
+            if (qty > max) qty = max;
+            if (qty < 1) qty = 1;
 
-            fetch("{{ route('cart.update') }}", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                    },
-                    body: JSON.stringify({
-                        items: items
-                    })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        location.reload(); // reload for now (later we can make it fully dynamic)
-                    }
-                });
+            input.value = qty;
+
+            let colorSelect = document.querySelector('.color-select[data-key="' + key + '"]');
+
+            items[key] = {
+                quantity: qty,
+                color: colorSelect ? colorSelect.value : null
+            };
+        });
+
+        fetch("{{ route('cart.update') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({ items: items })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                location.reload(); // later we can make dynamic
+            }
+        });
+    }
+
+    // =========================
+    // ➕ PLUS BUTTON
+    // =========================
+    document.querySelectorAll('.btn-plus').forEach(btn => {
+        btn.addEventListener('click', function() {
+
+            let key = this.dataset.key;
+            let input = document.querySelector('.qty-input[data-key="' + key + '"]');
+
+            let current = parseInt(input.value);
+            let max = parseInt(input.getAttribute('max')) || 999;
+
+            if (current < max) {
+                input.value = current + 1;
+                toggleButtons(input, key);
+                updateCart();
+            }
+        });
+    });
+
+    // =========================
+    // ➖ MINUS BUTTON
+    // =========================
+    document.querySelectorAll('.btn-minus').forEach(btn => {
+        btn.addEventListener('click', function() {
+
+            let key = this.dataset.key;
+            let input = document.querySelector('.qty-input[data-key="' + key + '"]');
+
+            let current = parseInt(input.value);
+
+            if (current > 1) {
+                input.value = current - 1;
+                toggleButtons(input, key);
+                updateCart();
+            }
+        });
+    });
+
+    // =========================
+    // ✏️ MANUAL INPUT
+    // =========================
+    document.querySelectorAll('.qty-input').forEach(input => {
+        input.addEventListener('input', function() {
+
+            let key = this.dataset.key;
+
+            let value = parseInt(this.value) || 1;
+            let max = parseInt(this.getAttribute('max')) || 999;
+
+            if (value > max) value = max;
+            if (value < 1) value = 1;
+
+            this.value = value;
+
+            toggleButtons(this, key);
+        });
+
+        input.addEventListener('change', updateCart);
+    });
+
+    // =========================
+    // 🔘 ENABLE / DISABLE BUTTONS
+    // =========================
+    function toggleButtons(input, key) {
+
+        let value = parseInt(input.value);
+        let max = parseInt(input.getAttribute('max')) || 999;
+
+        let plusBtn = document.querySelector('.btn-plus[data-key="' + key + '"]');
+        let minusBtn = document.querySelector('.btn-minus[data-key="' + key + '"]');
+
+        if (plusBtn) {
+            plusBtn.disabled = value >= max;
         }
 
-        // ➕ PLUS BUTTON
-        document.querySelectorAll('.btn-plus').forEach(btn => {
-            btn.addEventListener('click', function() {
+        if (minusBtn) {
+            minusBtn.disabled = value <= 1;
+        }
+    }
 
-                let key = this.dataset.key;
-                let input = document.querySelector('.qty-input[data-key="' + key + '"]');
-
-                input.value = parseInt(input.value) + 1;
-
-                updateCart();
-            });
+    // =========================
+    // 🎨 COLOR CHANGE
+    // =========================
+    document.querySelectorAll('.color-select').forEach(select => {
+        select.addEventListener('change', function() {
+            updateCart();
         });
-
-        // ➖ MINUS BUTTON
-        document.querySelectorAll('.btn-minus').forEach(btn => {
-            btn.addEventListener('click', function() {
-
-                let key = this.dataset.key;
-                let input = document.querySelector('.qty-input[data-key="' + key + '"]');
-
-                if (parseInt(input.value) > 1) {
-                    input.value = parseInt(input.value) - 1;
-                    updateCart();
-                }
-            });
-        });
-
-        // ✏️ MANUAL INPUT CHANGE
-        document.querySelectorAll('.qty-input').forEach(input => {
-            input.addEventListener('change', function() {
-                updateCart();
-            });
-        });
-
-        // 🎨 COLOR CHANGE
-        document.querySelectorAll('.color-select').forEach(select => {
-            select.addEventListener('change', function() {
-                updateCart();
-            });
-        });
-
-        // ❌ REMOVE ITEM
-        document.querySelectorAll('.remove-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-
-                let key = this.dataset.key;
-
-                let formData = new FormData();
-                formData.append('_token', "{{ csrf_token() }}");
-                formData.append('_method', 'DELETE');
-
-                fetch('/cart/remove/' + key, {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(() => location.reload());
-            });
-        });
-
     });
+
+    // =========================
+    // ❌ REMOVE ITEM
+    // =========================
+    document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+
+            let key = this.dataset.key;
+
+            let formData = new FormData();
+            formData.append('_token', "{{ csrf_token() }}");
+            formData.append('_method', 'DELETE');
+
+            fetch('/cart/remove/' + key, {
+                method: 'POST',
+                body: formData
+            })
+            .then(() => location.reload());
+        });
+    });
+
+    // =========================
+    // 🔥 INITIAL BUTTON STATE
+    // =========================
+    document.querySelectorAll('.qty-input').forEach(input => {
+        let key = input.dataset.key;
+        toggleButtons(input, key);
+    });
+
+});
 </script>
 
 <script>
